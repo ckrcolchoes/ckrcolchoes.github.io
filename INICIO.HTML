@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minha Loja Virtual</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header>
+    <h1>🛒 CKR Colchões</h1>
+    <div id="carrinho-icon">Carrinho (0)</div>
+  </header>
+
+  <!-- Lista de produtos -->
+  <main>
+    <section id="produtos">
+      <div class="produto">
+        <img src="PHY. MEGA RESISTENTE.png" alt="">
+        <h3>Colchão +Cama Box</h3>
+        <p>R$ 999,90</p>
+        <button onclick="adicionarCarrinho('Colchão + Cama Box', 999,90)">Adicionar</button>
+      </div>
+
+      <div class="produto">
+        <img src="PHY. RESISTENTE LISO.png" alt="Colchão + Cama Box">
+        <h3>Colchão + Cama Box</h3>
+        <p>R$ 599,00</p>
+        <button onclick="adicionarCarrinho('Colchão + Cama Box', 599,00)">Adicionar</button>
+      </div>
+
+      <div class="produto">
+        <img src="PHY. ULTRA RESISTENTE.png" alt="Colchão + Cama Box Casal">
+        <h3>Colchão + Cama Box Casal</h3>
+        <p>R$ 1.169,99</p>
+        <button onclick="adicionarCarrinho('Colchão + Cama Box Casal', 1.169,99)">Adicionar</button>
+      </div>
+    </section>
+
+    <!-- Área do carrinho -->
+    <section id="carrinho-area">
+      <h2>🛍️ Seu Carrinho</h2>
+      <ul id="carrinho-lista"></ul>
+      <p id="carrinho-total">Total: R$ 0</p>
+
+      <!-- Campo de frete -->
+      <div id="frete">
+        <input type="text" id="cep" placeholder="Digite seu CEP">
+        <button onclick="calcularFrete()">Calcular Frete</button>
+        <p id="frete-valor">Frete: R$ 0</p>
+      </div>
+
+      <button id="finalizar-btn" onclick="finalizarCompra()">Finalizar Compra no WhatsApp</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
