@@ -164,7 +164,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
       <h1>Até <em id="pct">30%</em> OFF<br>em toda a loja</h1>
       <p>Colchões, bases e travesseiros com preço de Black Friday. Passe o mouse para parar e clique para ver o produto.</p>
     </div>
-    <img class="fachada" src="imagem/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
+    <img class="fachada" src="img/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
   </div>
   <div class="stage" id="stage"></div>
   <div class="dots" id="dots"></div>
@@ -210,12 +210,12 @@ const $=id=>document.getElementById(id);
 const R=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const novo=v=>Math.round(v*(100-DESCONTO))/100;
 const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
-const foto=p=>`imagem/${p.img.includes(".")?p.img:p.img+".webp"}`;
+const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
 const CATS={todos:"Todos",colchao:"Colchões",base:"Bases",cabeceira:"Cabeceiras",travesseiro:"Travesseiros",acessorio:"Acessórios"};
 const comPreco=p=>p.tamanhos.filter(t=>t[1]!=null);
 const menor=p=>{const c=comPreco(p);return c.length?c.reduce((a,b)=>a[1]<b[1]?a:b):null};
 const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-const fotos=p=>[foto(p),...((typeof MINIS!=="undefined"&&MINIS[p.img])||[]).map(n=>"imagem/mini/"+n)];
+const fotos=p=>[foto(p),...((typeof MINIS!=="undefined"&&MINIS[p.img])||[]).map(n=>"img/mini/"+n)];
 const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<button type="button" class="${j==0?"on":""}" data-f="${f}" aria-label="Foto ${j+1} de ${p.nome}"><img src="${f}" alt="" loading="lazy"></button>`).join("")}</div>`;
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
 const off=()=>DESCONTO?`<span class="off">-${DESCONTO}%</span>`:"";
