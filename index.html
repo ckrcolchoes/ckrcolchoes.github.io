@@ -68,6 +68,15 @@ footer p+p{margin-top:4px;color:#7f8aa8}
 .black h1 em{color:var(--gold)}
 .black p{max-width:560px;color:#c8d3f0;font-size:18px}
 .stage{max-width:1000px;margin:0 auto;padding:56px 24px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.carr{position:relative;max-width:1180px;margin:0 auto}
+.seta{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:52px;height:52px;border-radius:50%;border:2px solid #fff5;background:#0b1230cc;color:#fff;font-size:30px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0 0 4px;box-shadow:0 6px 18px #0008;transition:background .2s,transform .2s,border-color .2s}
+.seta:hover{background:var(--gold);color:#1a1200;border-color:var(--gold);transform:translateY(-50%) scale(1.1)}
+.seta:active{transform:translateY(-50%) scale(.94)}
+.seta:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.seta.ant{left:6px}.seta.prox{right:6px}
+.dots i{cursor:pointer}
+@media(max-width:1180px){.seta{width:44px;height:44px;font-size:26px}}
+@media(max-width:700px){.seta{width:34px;height:34px;font-size:22px;border-width:1px}.seta.ant{left:2px}.seta.prox{right:2px}}
 .dots{display:flex;justify-content:center;gap:8px;padding:6px 0 30px;flex-wrap:wrap}
 .dots i{width:9px;height:9px;border-radius:99px;background:#fff4;transition:.3s}.dots i.on{background:var(--gold);width:26px}
 @keyframes in{from{opacity:0;transform:translateY(34px) scale(.9)}}
@@ -166,7 +175,11 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
     </div>
     <img class="fachada" src="img/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
   </div>
-  <div class="stage" id="stage"></div>
+  <div class="carr">
+    <button type="button" class="seta ant" id="ant" aria-label="Produtos anteriores">&#8249;</button>
+    <div class="stage" id="stage"></div>
+    <button type="button" class="seta prox" id="prox" aria-label="Próximos produtos">&#8250;</button>
+  </div>
   <div class="dots" id="dots"></div>
 </div>
 
@@ -237,7 +250,16 @@ function banner(){$("stage").innerHTML=grupos[g].map(slide).join("");[...$("dots
 banner();
 $("stage").onmouseenter=()=>pausado=true;$("stage").onmouseleave=()=>pausado=false;
 $("stage").ontouchstart=()=>pausado=true;$("stage").ontouchend=()=>setTimeout(()=>pausado=false,2500);
-setInterval(()=>{if(pausado||$("ov").classList.contains("on"))return;g=(g+1)%grupos.length;banner();},BANNER_SEGUNDOS*1000);
+let ultimoClique=0;
+function ir(n){g=(n+grupos.length)%grupos.length;ultimoClique=Date.now();banner();}
+$("ant").onclick=()=>ir(g-1);
+$("prox").onclick=()=>ir(g+1);
+[...$("dots").children].forEach((d,k)=>d.onclick=()=>ir(k));
+document.addEventListener("keydown",e=>{if($("ov").classList.contains("on"))return;if(["INPUT","TEXTAREA"].includes(document.activeElement.tagName))return;if(e.key=="ArrowLeft")ir(g-1);if(e.key=="ArrowRight")ir(g+1);});
+let x0=null;
+$("stage").addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
+$("stage").addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)ir(dx<0?g+1:g-1);},{passive:true});
+setInterval(()=>{if(pausado||Date.now()-ultimoClique<6000||$("ov").classList.contains("on"))return;g=(g+1)%grupos.length;banner();},BANNER_SEGUNDOS*1000);
 $("stage").onclick=e=>{const s=e.target.closest(".slide");if(s)abrir(+s.dataset.i);};
 
 /* ---------- Catálogo ---------- */
