@@ -39,7 +39,7 @@ const PRODUTOS = [
   { nome: "Iso Superpocket", cat: "colchao", img: "iso-superpocket",
     desc: "Molas superpocket ensacadas e lâmina de EPS. Conforto extra com ótimo custo-benefício.",
     dif: ["Molas superpocket ensacadas", "Lâmina de EPS", "Revestimento em malha"],
-    tamanhos: [["Casal 138×188", 1472.63, "2026082016444300", 1]] },
+    tamanhos: [["Casal 138×188", 1472.63, "2026082016444300", 0]] },
   { nome: "Physical Nanolastic Ortopillow", cat: "colchao", img: "physical-nano",
     desc: "Espuma Nanolastic com Ortopillow, que funciona como um travesseiro sobre o colchão. Alivia pontos de pressão.",
     dif: ["Camada Ortopillow", "Espuma certificada 100% poliuretano", "Sistema No Turn"],
