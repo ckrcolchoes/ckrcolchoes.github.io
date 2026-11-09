@@ -411,18 +411,27 @@ function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
    "cat:travesseiro" = todos os produtos da categoria | "Protetor de Colchão" = produto pelo nome.
    Para mudar, crie  const SUGESTOES = {...}  no produtos.js (mesmo formato). */
 const SUG_PADRAO={
-  colchao:["Protetor de Colchão","cat:travesseiro","cat:base"],
+  colchao:["cat:base","Protetor de Colchão","cat:travesseiro"],
   base:["cat:colchao","Protetor de Colchão","cat:travesseiro","cat:cabeceira"],
   cabeceira:["cat:travesseiro","Protetor de Colchão"],
   travesseiro:["Protetor de Colchão","cat:travesseiro"],
   acessorio:["cat:travesseiro","Protetor de Colchão"]};
-const SUG_MAX=4,UNICAS=["colchao","base","cabeceira"];   // itens que não faz sentido sugerir se já há um no carrinho
+/* Pares que combinam entre si (aparecem primeiro, em todos os tamanhos, sem exigir o mesmo tamanho).
+   Para mudar, crie  const COMBINA = {...}  no produtos.js (nome do produto -> lista de nomes). */
+const COMBINA_PADRAO={
+  "Base Sommier Corino Vazada":["Colchão Auxiliar Cori Nero"],
+  "Colchão Auxiliar Cori Nero":["Base Sommier Corino Vazada"]};
+const ALIAS_TAM={auxiliar:"solteiro"};   // o auxiliar (79×171) usa protetor/base de solteiro
+const TAMS=["solteiro","solteirao","casal","queen","king","auxiliar","comercial"];
+const palavra=t=>{const w=norm(t[0]).split(/\s+/)[0];return ALIAS_TAM[w]||w};
+const SUG_MAX=7,UNICAS=["colchao","base","cabeceira"];   // itens que não faz sentido sugerir se já há um no carrinho
 function sugestoes(){
   if(!cart.length||etapa!=0)return "";
   const regras=typeof SUGESTOES!=="undefined"?SUGESTOES:SUG_PADRAO;
   const noCart=new Set(cart.map(c=>c.i)),cats=new Set(cart.map(c=>PRODUTOS[c.i].cat));
   const ref=cart.map(c=>({p:PRODUTOS[c.i],t:PRODUTOS[c.i].tamanhos[c.k]})).find(x=>x.p.cat=="colchao"||x.p.cat=="base");
-  const alvo=ref?norm(ref.t[0]).split(/\s+/)[0]:null;           // ex.: "casal"
+  let alvo=ref?norm(ref.t[0]).split(/\s+/)[0]:null;           // ex.: "casal"
+  if(alvo&&ALIAS_TAM[alvo])alvo=ALIAS_TAM[alvo];
   const lista=[];cart.forEach(c=>(regras[PRODUTOS[c.i].cat]||[]).forEach(r=>{if(!lista.includes(r))lista.push(r)}));
   const filas=lista.map(r=>{
     const ids=PRODUTOS.map((p,i)=>i).filter(i=>{const p=PRODUTOS[i];
@@ -431,11 +440,16 @@ function sugestoes(){
     const out=[];ids.forEach(i=>{const p=PRODUTOS[i];
       const ok=p.tamanhos.map((t,k)=>({t,k})).filter(({t,k})=>t[1]!=null&&!esgT(t)&&!(t[3]!=null&&(cart.find(c=>c.i==i&&c.k==k)||{q:0}).q>=t[3]));
       if(!ok.length)return;
-      let esc=alvo&&ok.find(({t})=>norm(t[0]).split(/\s+/)[0]==alvo);
-      if(!esc)esc=(alvo&&p.tamanhos.length>1)?null:ok[0];       // tamanho certo ou nada
+      if(p.cat=="cabeceira"&&alvo&&!["casal","queen","king"].includes(alvo))return;   // cabeceira de 160 cm não serve em solteiro
+      const comTam=p.tamanhos.some(t=>TAMS.includes(palavra(t)));   // colchão/base/protetor têm tamanho de cama
+      const esc=(alvo&&comTam)?ok.find(({t})=>palavra(t)==alvo):ok[0];   // tamanho certo ou nada
       if(esc)out.push({i,k:esc.k})});
     return out});
-  const res=[];for(let n=0;res.length<SUG_MAX&&filas.some(f=>f.length>n);n++)filas.forEach(f=>{if(f[n]&&res.length<SUG_MAX&&!res.some(x=>x.i==f[n].i))res.push(f[n])});
+  const pares=typeof COMBINA!=="undefined"?COMBINA:COMBINA_PADRAO,res=[];
+  cart.forEach(c=>(pares[PRODUTOS[c.i].nome]||[]).forEach(nm=>PRODUTOS.forEach((p,i)=>{
+    if(norm(p.nome)!=norm(nm)||noCart.has(i))return;
+    p.tamanhos.forEach((t,k)=>{if(res.length<SUG_MAX&&t[1]!=null&&!esgT(t)&&!res.some(x=>x.i==i&&x.k==k))res.push({i,k})})})));
+  for(let n=0;res.length<SUG_MAX&&filas.some(f=>f.length>n);n++)filas.forEach(f=>{if(f[n]&&res.length<SUG_MAX&&!res.some(x=>x.i==f[n].i))res.push(f[n])});
   if(!res.length)return "";
   return `<div class="sug"><h4>Aproveite e leve também</h4><small>Combine com o seu pedido (opcional)</small>${res.map(({i,k})=>{const p=PRODUTOS[i],t=p.tamanhos[k];
     return `<div class="sg"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]} · ${R(novo(t[1]))}</small></div><button type="button" class="add" onclick="add(${i},${k})">+ Adicionar</button></div>`}).join("")}</div>`;}
