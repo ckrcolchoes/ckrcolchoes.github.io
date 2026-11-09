@@ -68,15 +68,6 @@ footer p+p{margin-top:4px;color:#7f8aa8}
 .black h1 em{color:var(--gold)}
 .black p{max-width:560px;color:#c8d3f0;font-size:18px}
 .stage{max-width:1000px;margin:0 auto;padding:56px 24px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.carr{position:relative;max-width:1180px;margin:0 auto}
-.seta{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:52px;height:52px;border-radius:50%;border:2px solid #fff5;background:#0b1230cc;color:#fff;font-size:30px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0 0 4px;box-shadow:0 6px 18px #0008;transition:background .2s,transform .2s,border-color .2s}
-.seta:hover{background:var(--gold);color:#1a1200;border-color:var(--gold);transform:translateY(-50%) scale(1.1)}
-.seta:active{transform:translateY(-50%) scale(.94)}
-.seta:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.seta.ant{left:6px}.seta.prox{right:6px}
-.dots i{cursor:pointer}
-@media(max-width:1180px){.seta{width:44px;height:44px;font-size:26px}}
-@media(max-width:700px){.seta{width:34px;height:34px;font-size:22px;border-width:1px}.seta.ant{left:2px}.seta.prox{right:2px}}
 .dots{display:flex;justify-content:center;gap:8px;padding:6px 0 30px;flex-wrap:wrap}
 .dots i{width:9px;height:9px;border-radius:99px;background:#fff4;transition:.3s}.dots i.on{background:var(--gold);width:26px}
 @keyframes in{from{opacity:0;transform:translateY(34px) scale(.9)}}
@@ -150,6 +141,13 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .q{display:flex;gap:6px;align-items:center;margin-top:4px}.q button{width:26px;height:26px;border-radius:50%;border:1px solid #8886;background:var(--card);color:var(--ink);cursor:pointer}
 .tot{padding:18px 20px;border-top:1px solid #8883}.tot .por{font-size:30px}
 .vazio{color:var(--muted);padding:30px 0;text-align:center}
+/* ESGOTADO + AVISO */
+.off.esg{background:#555}
+.card.esgotado .ph img{filter:grayscale(1);opacity:.55}
+.tams span.sem{text-decoration:line-through;opacity:.55}
+.esgmsg{color:var(--red);font-weight:700;margin-top:10px}
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);background:var(--red);color:#fff;padding:13px 20px;border-radius:14px;font-weight:600;z-index:90;opacity:0;pointer-events:none;transition:.3s;max-width:min(92vw,420px);text-align:center;box-shadow:0 10px 30px #0006}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -175,11 +173,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
     </div>
     <img class="fachada" src="img/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
   </div>
-  <div class="carr">
-    <button type="button" class="seta ant" id="ant" aria-label="Produtos anteriores">&#8249;</button>
-    <div class="stage" id="stage"></div>
-    <button type="button" class="seta prox" id="prox" aria-label="Próximos produtos">&#8250;</button>
-  </div>
+  <div class="stage" id="stage"></div>
   <div class="dots" id="dots"></div>
 </div>
 
@@ -226,12 +220,16 @@ const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
 const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
 const CATS={todos:"Todos",colchao:"Colchões",base:"Bases",cabeceira:"Cabeceiras",travesseiro:"Travesseiros",acessorio:"Acessórios"};
 const comPreco=p=>p.tamanhos.filter(t=>t[1]!=null);
-const menor=p=>{const c=comPreco(p);return c.length?c.reduce((a,b)=>a[1]<b[1]?a:b):null};
+const menor=p=>{const c=comPreco(p),d=c.filter(t=>!esgT(t)),l=d.length?d:c;return l.length?l.reduce((a,b)=>a[1]<b[1]?a:b):null};
 const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const fotos=p=>[foto(p),...((typeof MINIS!=="undefined"&&MINIS[p.img])||[]).map(n=>"img/mini/"+n)];
 const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<button type="button" class="${j==0?"on":""}" data-f="${f}" aria-label="Foto ${j+1} de ${p.nome}"><img src="${f}" alt="" loading="lazy"></button>`).join("")}</div>`;
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
 const off=()=>DESCONTO?`<span class="off">-${DESCONTO}%</span>`:"";
+/* Estoque: 0 = esgotado | null = não informado (sem limite) */
+const esgT=t=>t[3]!=null&&t[3]<=0;
+const esgP=p=>p.tamanhos.every(esgT);
+let _tt;function aviso(m){let el=$("toast");if(!el){el=document.createElement("div");el.id="toast";el.setAttribute("role","alert");document.body.append(el)}el.textContent=m;el.classList.add("on");clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove("on"),3500);}
 
 $("tel").textContent="📞 "+LOJA.telefone;$("tel2").textContent="📞 "+LOJA.telefone;$("end").textContent=LOJA.endereco;
 $("mapa").src="https://www.google.com/maps?q="+encodeURIComponent(LOJA.endereco)+"&output=embed";
@@ -239,7 +237,7 @@ $("pct").textContent=DESCONTO+"%";
 ["wa-top","wa-fab","wa-loja"].forEach(i=>$(i).href=wa("Olá! Vim pelo site da CKR Colchões."));
 
 /* ---------- Banner (3 em 3) ---------- */
-const BANNER=PRODUTOS.map((p,i)=>i).filter(i=>menor(PRODUTOS[i]));
+const BANNER=PRODUTOS.map((p,i)=>i).filter(i=>menor(PRODUTOS[i])&&!esgP(PRODUTOS[i]));
 const grupos=[];for(let i=0;i<BANNER.length;i+=3)grupos.push(BANNER.slice(i,i+3));
 let g=0,pausado=false;
 const slide=i=>{const p=PRODUTOS[i],t=menor(p);return `<div class="slide" data-i="${i}">${off()}
@@ -250,22 +248,13 @@ function banner(){$("stage").innerHTML=grupos[g].map(slide).join("");[...$("dots
 banner();
 $("stage").onmouseenter=()=>pausado=true;$("stage").onmouseleave=()=>pausado=false;
 $("stage").ontouchstart=()=>pausado=true;$("stage").ontouchend=()=>setTimeout(()=>pausado=false,2500);
-let ultimoClique=0;
-function ir(n){g=(n+grupos.length)%grupos.length;ultimoClique=Date.now();banner();}
-$("ant").onclick=()=>ir(g-1);
-$("prox").onclick=()=>ir(g+1);
-[...$("dots").children].forEach((d,k)=>d.onclick=()=>ir(k));
-document.addEventListener("keydown",e=>{if($("ov").classList.contains("on"))return;if(["INPUT","TEXTAREA"].includes(document.activeElement.tagName))return;if(e.key=="ArrowLeft")ir(g-1);if(e.key=="ArrowRight")ir(g+1);});
-let x0=null;
-$("stage").addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
-$("stage").addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)ir(dx<0?g+1:g-1);},{passive:true});
-setInterval(()=>{if(pausado||Date.now()-ultimoClique<6000||$("ov").classList.contains("on"))return;g=(g+1)%grupos.length;banner();},BANNER_SEGUNDOS*1000);
+setInterval(()=>{if(pausado||$("ov").classList.contains("on"))return;g=(g+1)%grupos.length;banner();},BANNER_SEGUNDOS*1000);
 $("stage").onclick=e=>{const s=e.target.closest(".slide");if(s)abrir(+s.dataset.i);};
 
 /* ---------- Catálogo ---------- */
-function card(p,i){const t=menor(p),el=document.createElement("article");el.className="card";el.dataset.i=i;
-  el.innerHTML=`${t?off():""}<div class="ph"><img src="${foto(p)}" alt="${p.nome}" loading="lazy"></div>${thumbs(p,"sm")}<h3>${p.nome}</h3><p>${p.desc}</p>
-  <div class="tams">${p.tamanhos.map(x=>`<span>${x[0]}</span>`).join("")}</div>
+function card(p,i){const t=menor(p),el=document.createElement("article");el.className="card"+(esgP(p)?" esgotado":"");el.dataset.i=i;
+  el.innerHTML=`${esgP(p)?'<span class="off esg">Esgotado</span>':t?off():""}<div class="ph"><img src="${foto(p)}" alt="${p.nome}" loading="lazy"></div>${thumbs(p,"sm")}<h3>${p.nome}</h3><p>${p.desc}</p>
+  <div class="tams">${p.tamanhos.map(x=>`<span${esgT(x)?' class="sem"':''}>${x[0]}</span>`).join("")}</div>
   ${t?`${DESCONTO?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1]))}</div><div class="ap">${comPreco(p).length>1?"a partir de":"à vista"}</div>`:`<div class="consulte">Consulte o preço</div>`}
   <span class="btn dark">Ver detalhes</span>`;return el;}
 let catAtual="todos";
@@ -281,15 +270,16 @@ mostrar("todos");
 
 /* ---------- Detalhe do produto ---------- */
 function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1]):null;
-  const disp=t[3]==null?"Consulte":t[3]<=2?`Últimas ${t[3]} un.`:"Em estoque";
+  const disp=esgT(t)?"Esgotado":t[3]==null?"Consulte":t[3]<=2?`Últimas ${t[3]} un.`:"Em estoque";
   $("det").innerHTML=`<button class="x" onclick="fechar()" aria-label="Fechar">×</button>
-  <div class="dg"><div class="bigwrap"><div class="bigph">${pr!=null?off():""}<img src="${foto(p)}" alt="${p.nome}">${thumbs(p,"")}</div></div>
+  <div class="dg"><div class="bigwrap"><div class="bigph">${esgT(t)?'<span class="off esg">Esgotado</span>':pr!=null?off():""}<img src="${foto(p)}" alt="${p.nome}">${thumbs(p,"")}</div></div>
   <div><div class="cat">${CATS[p.cat]}</div><h2>${p.nome}</h2>
-  ${p.tamanhos.length>1?`<div class="tsel">${p.tamanhos.map((x,j)=>`<button class="${j==k?"on":""}" onclick="abrir(${i},${j})">${x[0]}</button>`).join("")}</div>`:`<div class="cat" style="color:var(--muted);letter-spacing:.05em;margin-bottom:16px">${t[0]}</div>`}
+  ${p.tamanhos.length>1?`<div class="tsel">${p.tamanhos.map((x,j)=>`<button class="${j==k?"on":""}" onclick="abrir(${i},${j})">${x[0]}${esgT(x)?" · esgotado":""}</button>`).join("")}</div>`:`<div class="cat" style="color:var(--muted);letter-spacing:.05em;margin-bottom:16px">${t[0]}</div>`}
   <div class="pbox">${pr!=null?`${DESCONTO?`<span class="de">${R(t[1])}</span><span class="pct">-${DESCONTO}%</span>`:""}<div class="por">${R(pr)}</div>
     <div class="ent">ou <b>10x de ${R(pr/10)}</b> sem juros · desconto especial no Pix</div>`:`<div class="consulte">Preço sob consulta</div><div class="ent">Fale com a gente pelo WhatsApp.</div>`}
-    <div class="acts">${pr!=null?`<button class="btn dark" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
-    <a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! Quero o ${p.nome} (${t[0]})${pr!=null?" por "+R(pr):""}. Ref. ${t[2]}`)}">${pr!=null?"Comprar no WhatsApp":"Consultar preço no WhatsApp"}</a></div>
+    ${esgT(t)?`<div class="esgmsg">Esgotado no momento. Chame a gente e avisamos quando chegar.</div>`:""}
+    <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn dark" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
+    <a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! Quero o ${p.nome} (${t[0]})${pr!=null?" por "+R(pr):""}. Ref. ${t[2]}`)}">${pr!=null?"Comprar no WhatsApp":"Consultar preço no WhatsApp"}</a>`}</div>
     <div class="ent">🚚 Entrega grátis em Fortaleza</div></div>
   <div class="specs"><div><small>Medida</small><b>${t[0]}</b></div><div><small>Referência</small><b>${t[2]}</b></div><div><small>Disponibilidade</small><b>${disp}</b></div></div></div></div>
   <div class="sob"><div><h3>Sobre o produto</h3><p>${p.desc}</p></div>
@@ -302,12 +292,17 @@ document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").cla
 
 /* ---------- Carrinho ---------- */
 let cart=[];
-function add(i,k){const f=cart.find(c=>c.i==i&&c.k==k);f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
-function mudar(n,d){cart[n].q+=d;if(cart[n].q<1)cart.splice(n,1);desenhar();}
+function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k==k),atual=f?f.q:0;
+  if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
+  if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. de ${p.nome} (${t[0]}).`);$("dr").classList.add("on");return;}
+  f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
+function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
+  if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. de ${p.nome} (${t[0]}).`);return;}
+  c.q+=d;if(c.q<1)cart.splice(n,1);desenhar();}
 function desenhar(){
   $("cnt").textContent=cart.reduce((s,c)=>s+c.q,0);
   $("itens").innerHTML=cart.length?cart.map((c,n)=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];
-    return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div></div><b>${R(novo(t[1])*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
+    return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1])*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
   const total=cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1])*c.q,0);
   const msg="Olá! Quero fechar este pedido:\n"+cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1])*c.q)}`}).join("\n")+`\nTotal: ${R(total)}`;
   $("tot").innerHTML=cart.length?`<div class="ent">Total</div><div class="por">${R(total)}</div><a class="btn" style="display:block;margin-top:12px" target="_blank" rel="noopener" href="${wa(msg)}">Finalizar no WhatsApp</a>`:"";}
