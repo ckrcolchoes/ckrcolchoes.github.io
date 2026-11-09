@@ -71,7 +71,7 @@ const PRODUTOS = [
   { nome: "Base Sommier Baú", cat: "base", img: "base-bau",
     desc: "Baú com estrutura em madeira de reflorestamento tratada. Muito espaço para guardar roupa de cama e o que mais precisar.",
     dif: ["Madeira de reflorestamento tratada", "Sistema de amortecedores pneumáticos", "Muito espaço de armazenamento"],
-    tamanhos: [["Casal 138×188×39", 1550.00, "BAU-138", 3], ["Solteiro 88×188×25 (preta)", 1199.19, "2026100117155902", 1]] },
+    tamanhos: [["Casal 138×188×39", 1550.00, "BAU-138", 2], ["Solteiro 88×188×25 (preta)", 1199.19, "2026100117155902", 1]] },
   { nome: "Base Sommier Corino Vazada", cat: "base", img: "base-corino-vazada",
     desc: "Forração em tecido sintético com acabamento sofisticado. Dá firmeza na sustentação sem perder o conforto. Foto da versão preta vazada.",
     dif: ["Forração em corino", "Estrutura de madeira de reflorestamento", "Pés rosqueáveis"],
