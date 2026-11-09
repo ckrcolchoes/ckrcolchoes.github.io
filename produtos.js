@@ -75,7 +75,7 @@ const PRODUTOS = [
   { nome: "Base Sommier Corino Vazada", cat: "base", img: "base-corino-vazada",
     desc: "Forração em tecido sintético com acabamento sofisticado. Dá firmeza na sustentação sem perder o conforto. Foto da versão preta vazada.",
     dif: ["Forração em corino", "Estrutura de madeira de reflorestamento", "Pés rosqueáveis"],
-    tamanhos: [["Solteiro 88×188×25 (preta vazada)", 564.57, "2026100117195901", 1], ["Solteirão 108×198×23 (cinza)", 577.30, "2026100117195904", 1]] },
+    tamanhos: [["Solteiro 88×188×25 (preta vazada)", 564.57, "2026100117195901", 1], ["Solteirão 108×198×23 (cinza)", 577.30, "2026100117195904", 0]] },
   { nome: "Box Sommier Pop", cat: "base", img: "base-sommier",
     desc: "Base sommier para o seu colchão, com estrutura de madeira tratada. Foto ilustrativa.",
     dif: ["Estrutura de madeira tratada", "Camada de espuma na superfície", "Pés rosqueáveis"],
