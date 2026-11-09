@@ -166,6 +166,11 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .pixbox ol{padding-left:18px;font-size:13px;color:var(--muted);line-height:1.5}
 .qr{width:210px;max-width:100%;margin:2px auto 0;background:#fff;border-radius:12px;padding:6px;box-shadow:0 2px 10px #0003}.qr svg{display:block;width:100%;height:auto}
 .cap{text-align:center}
+.sug{margin:18px 0 6px}.sug h4{font-family:Georgia,serif;font-size:19px}.sug>small{color:var(--muted);display:block;margin:2px 0 6px}
+.sg{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed #8884}
+.sg img{width:56px;height:44px;object-fit:contain;background:#fff;border-radius:8px;mix-blend-mode:multiply}
+.sg b{font-size:13px;display:block}.sg small{color:var(--muted);font-size:12px;display:block}
+.sg .add{border:0;background:var(--navy);color:#fff;border-radius:99px;padding:8px 13px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
 .lnk{background:none;border:0;color:var(--blue);font:inherit;cursor:pointer;margin-top:10px;width:100%;padding:6px}
 </style>
 </head>
@@ -401,10 +406,44 @@ function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k
 function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
   if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. de ${p.nome} (${t[0]}).`);return;}
   c.q+=d;if(c.q<1)cart.splice(n,1);desenhar();}
+/* ---------- Sugestões de adicionais ----------
+   Para cada categoria que está no carrinho, quais itens sugerir.
+   "cat:travesseiro" = todos os produtos da categoria | "Protetor de Colchão" = produto pelo nome.
+   Para mudar, crie  const SUGESTOES = {...}  no produtos.js (mesmo formato). */
+const SUG_PADRAO={
+  colchao:["Protetor de Colchão","cat:travesseiro","cat:base"],
+  base:["cat:colchao","Protetor de Colchão","cat:travesseiro","cat:cabeceira"],
+  cabeceira:["cat:travesseiro","Protetor de Colchão"],
+  travesseiro:["Protetor de Colchão","cat:travesseiro"],
+  acessorio:["cat:travesseiro","Protetor de Colchão"]};
+const SUG_MAX=4,UNICAS=["colchao","base","cabeceira"];   // itens que não faz sentido sugerir se já há um no carrinho
+function sugestoes(){
+  if(!cart.length||etapa!=0)return "";
+  const regras=typeof SUGESTOES!=="undefined"?SUGESTOES:SUG_PADRAO;
+  const noCart=new Set(cart.map(c=>c.i)),cats=new Set(cart.map(c=>PRODUTOS[c.i].cat));
+  const ref=cart.map(c=>({p:PRODUTOS[c.i],t:PRODUTOS[c.i].tamanhos[c.k]})).find(x=>x.p.cat=="colchao"||x.p.cat=="base");
+  const alvo=ref?norm(ref.t[0]).split(/\s+/)[0]:null;           // ex.: "casal"
+  const lista=[];cart.forEach(c=>(regras[PRODUTOS[c.i].cat]||[]).forEach(r=>{if(!lista.includes(r))lista.push(r)}));
+  const filas=lista.map(r=>{
+    const ids=PRODUTOS.map((p,i)=>i).filter(i=>{const p=PRODUTOS[i];
+      if(noCart.has(i)||(UNICAS.includes(p.cat)&&cats.has(p.cat)))return false;
+      return r.startsWith("cat:")?p.cat==r.slice(4):norm(p.nome)==norm(r)});
+    const out=[];ids.forEach(i=>{const p=PRODUTOS[i];
+      const ok=p.tamanhos.map((t,k)=>({t,k})).filter(({t,k})=>t[1]!=null&&!esgT(t)&&!(t[3]!=null&&(cart.find(c=>c.i==i&&c.k==k)||{q:0}).q>=t[3]));
+      if(!ok.length)return;
+      let esc=alvo&&ok.find(({t})=>norm(t[0]).split(/\s+/)[0]==alvo);
+      if(!esc)esc=(alvo&&p.tamanhos.length>1)?null:ok[0];       // tamanho certo ou nada
+      if(esc)out.push({i,k:esc.k})});
+    return out});
+  const res=[];for(let n=0;res.length<SUG_MAX&&filas.some(f=>f.length>n);n++)filas.forEach(f=>{if(f[n]&&res.length<SUG_MAX&&!res.some(x=>x.i==f[n].i))res.push(f[n])});
+  if(!res.length)return "";
+  return `<div class="sug"><h4>Aproveite e leve também</h4><small>Combine com o seu pedido (opcional)</small>${res.map(({i,k})=>{const p=PRODUTOS[i],t=p.tamanhos[k];
+    return `<div class="sg"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]} · ${R(novo(t[1]))}</small></div><button type="button" class="add" onclick="add(${i},${k})">+ Adicionar</button></div>`}).join("")}</div>`;}
 function desenhar(){
   $("cnt").textContent=cart.reduce((s,c)=>s+c.q,0);
   $("itens").innerHTML=cart.length?cart.map((c,n)=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];
     return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1])*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
+  $("itens").innerHTML+=sugestoes();
   const total=cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1])*c.q,0);
   if(!cart.length)etapa=0;
   const tp=pixv(total),linhas=cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1])*c.q)}`}).join("\n");
