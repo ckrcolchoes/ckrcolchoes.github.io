@@ -333,7 +333,7 @@ const DADOS_NOTA="\n\n📄 DADOS PARA A NOTA FISCAL (preencha):\nNome completo: 
 /* Estoque: 0 = esgotado | null = não informado (sem limite) */
 const esgT=t=>t[3]!=null&&t[3]<=0;
 const esgP=p=>p.tamanhos.every(esgT);
-let _tt;function aviso(m){let el=$("toast");if(!el){el=document.createElement("div");el.id="toast";el.setAttribute("role","alert");document.body.append(el)}el.textContent=m;el.classList.add("on");clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove("on"),3500);}
+let _tt;function aviso(m){let el=$("toast");if(!el){el=document.createElement("div");el.id="toast";el.setAttribute("role","alert");document.body.append(el)}el.textContent=m;el.classList.add("on");clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove("on"),5000);}
 
 $("tel").textContent="📞 "+LOJA.telefone;$("tel2").textContent="📞 "+LOJA.telefone;$("end").textContent=LOJA.endereco;
 $("mapa").src="https://www.google.com/maps?q="+encodeURIComponent(LOJA.endereco)+"&output=embed";
@@ -401,10 +401,10 @@ function irPix(){etapa=1;desenhar();$("tot").scrollTop=0;}
 function voltar(){etapa=0;desenhar();}
 function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k==k),atual=f?f.q:0;
   if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
-  if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. de ${p.nome} (${t[0]}).`);$("dr").classList.add("on");return;}
+  if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);$("dr").classList.add("on");return;}
   f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
 function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
-  if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. de ${p.nome} (${t[0]}).`);return;}
+  if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);return;}
   c.q+=d;if(c.q<1)cart.splice(n,1);desenhar();}
 /* ---------- Sugestões de adicionais ----------
    Para cada categoria que está no carrinho, quais itens sugerir.
