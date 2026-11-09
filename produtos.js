@@ -103,7 +103,7 @@ const PRODUTOS = [
   { nome: "Protetor de Colchão", cat: "acessorio", img: "protetor",
     desc: "Protetor impermeável: protege o colchão contra líquidos, suor e impurezas e aumenta a durabilidade.",
     dif: ["Impermeável", "Revestimento lateral em tecido de poliéster", "Antiácaro"],
-    tamanhos: [["Solteiro 90×190", 101.77, "CON-002", 3], ["Casal 140×190", 128.70, "CON-009", 5], ["Queen 160×200", 138.63, "CON-003", 1], ["Comercial 30 cm (200×110)", 119.79, "CON-001", 1]] },
+    tamanhos: [["Solteiro 90×190", 101.77, "CON-002", 1], ["Casal 140×190", 128.70, "CON-009", 4], ["Queen 160×200", 138.63, "CON-003", 1], ["Comercial 30 cm (200×110)", 119.79, "CON-001", 1]] },
   { nome: "Almofada Roll", cat: "acessorio", img: "almofada-roll",
     desc: "Almofada com enchimento em espuma flocada, revestida em tecido nobuck. Cor: camurça cinza.",
     dif: ["Espuma flocada", "Tecido nobuck"],
