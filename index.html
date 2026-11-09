@@ -171,6 +171,13 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .sg img{width:56px;height:44px;object-fit:contain;background:#fff;border-radius:8px;mix-blend-mode:multiply}
 .sg b{font-size:13px;display:block}.sg small{color:var(--muted);font-size:12px;display:block}
 .sg .add{border:0;background:var(--navy);color:#fff;border-radius:99px;padding:8px 13px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
+.stagewrap{position:relative;max-width:1100px;margin:0 auto}
+.arr{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:0;background:#ffffffe6;color:var(--navy);font-size:28px;line-height:1;cursor:pointer;z-index:6;box-shadow:0 4px 14px #0007;display:grid;place-items:center;padding:0 0 3px;transition:background .2s,transform .2s}
+.arr:hover{background:var(--gold);transform:translateY(-50%) scale(1.1)}
+.arr.l{left:6px}.arr.r{right:6px}
+@media(max-width:700px){.arr{width:34px;height:34px;font-size:22px}.arr.l{left:2px}.arr.r{right:2px}}
+.garr{position:absolute;top:calc(50% - 20px);width:40px;height:40px;border-radius:50%;border:0;background:#0b1530d0;color:#fff;font-size:24px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0 0 3px}
+.garr:hover{background:var(--blue)}.garr.l{left:10px}.garr.r{right:10px}
 .lnk{background:none;border:0;color:var(--blue);font:inherit;cursor:pointer;margin-top:10px;width:100%;padding:6px}
 </style>
 </head>
@@ -197,7 +204,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
     </div>
     <img class="fachada" src="img/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
   </div>
-  <div class="stage" id="stage"></div>
+  <div class="stagewrap"><button type="button" class="arr l" id="ant" aria-label="Produtos anteriores">‹</button><div class="stage" id="stage"></div><button type="button" class="arr r" id="prox" aria-label="Próximos produtos">›</button></div>
   <div class="dots" id="dots"></div>
 </div>
 
@@ -350,6 +357,9 @@ ${DESCONTO?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1])
 $("dots").innerHTML=grupos.map(()=>"<i></i>").join("");
 function banner(){$("stage").innerHTML=grupos[g].map(slide).join("");[...$("dots").children].forEach((d,k)=>d.classList.toggle("on",k==g));}
 banner();
+let _pz;const ir=d=>{g=(g+d+grupos.length)%grupos.length;banner();pausado=true;clearTimeout(_pz);_pz=setTimeout(()=>pausado=false,6000)};
+$("ant").onclick=()=>ir(-1);$("prox").onclick=()=>ir(1);
+if(grupos.length<2){$("ant").style.display="none";$("prox").style.display="none"}
 $("stage").onmouseenter=()=>pausado=true;$("stage").onmouseleave=()=>pausado=false;
 $("stage").ontouchstart=()=>pausado=true;$("stage").ontouchend=()=>setTimeout(()=>pausado=false,2500);
 setInterval(()=>{if(pausado||$("ov").classList.contains("on"))return;g=(g+1)%grupos.length;banner();},BANNER_SEGUNDOS*1000);
@@ -376,7 +386,7 @@ mostrar("todos");
 function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1]):null;
   const disp=esgT(t)?"Esgotado":t[3]==null?"Consulte":t[3]<=2?`Últimas ${t[3]} un.`:"Em estoque";
   $("det").innerHTML=`<button class="x" onclick="fechar()" aria-label="Fechar">×</button>
-  <div class="dg"><div class="bigwrap"><div class="bigph">${esgT(t)?'<span class="off esg">Esgotado</span>':pr!=null?off():""}<img src="${foto(p)}" alt="${p.nome}">${thumbs(p,"")}</div></div>
+  <div class="dg"><div class="bigwrap"><div class="bigph">${esgT(t)?'<span class="off esg">Esgotado</span>':pr!=null?off():""}<img src="${foto(p)}" alt="${p.nome}">${fotos(p).length>1?'<button type="button" class="garr l" data-d="-1" aria-label="Foto anterior">‹</button><button type="button" class="garr r" data-d="1" aria-label="Próxima foto">›</button>':""}${thumbs(p,"")}</div></div>
   <div><div class="cat">${CATS[p.cat]}</div><h2>${p.nome}</h2>
   ${p.tamanhos.length>1?`<div class="tsel">${p.tamanhos.map((x,j)=>`<button class="${j==k?"on":""}" onclick="abrir(${i},${j})">${x[0]}${esgT(x)?" · esgotado":""}</button>`).join("")}</div>`:`<div class="cat" style="color:var(--muted);letter-spacing:.05em;margin-bottom:16px">${t[0]}</div>`}
   <div class="pbox">${pr!=null?`${DESCONTO?`<span class="de">${R(t[1])}</span><span class="pct">-${DESCONTO}%</span>`:""}<div class="por">${R(pr)}</div>
@@ -389,7 +399,7 @@ function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1
   <div class="sob"><div><h3>Sobre o produto</h3><p>${p.desc}</p></div>
   <div><h3>Diferenciais</h3><div class="difs">${(p.dif||[]).map(d=>`<div><i>✓</i>${d}</div>`).join("")}</div></div></div>`;
   $("ov").classList.add("on");document.body.style.overflow="hidden";$("ov").scrollTop=0;}
-$("det").onclick=e=>{const t=e.target.closest(".thumbs button");if(t)trocar(t,".bigph")};
+$("det").onclick=e=>{const a=e.target.closest(".garr");if(a){const bt=[...a.closest(".bigph").querySelectorAll(".thumbs button")],n=bt.findIndex(b=>b.classList.contains("on"));trocar(bt[(n+(+a.dataset.d)+bt.length)%bt.length],".bigph");return}const t=e.target.closest(".thumbs button");if(t)trocar(t,".bigph")};
 function fechar(){$("ov").classList.remove("on");document.body.style.overflow="";}
 $("ov").onclick=e=>{if(e.target.id=="ov")fechar()};
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").classList.remove("on")}});
