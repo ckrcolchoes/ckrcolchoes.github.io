@@ -9,6 +9,8 @@ const LOJA = {
 
 // Desconto da Black Friday em %. Coloque 0 para desligar a promoção.
 // Os preços abaixo são os da tabela de estoque; o desconto é aplicado sobre eles.
+// Para um produto ter desconto diferente, coloque  desconto: NUMERO  nele
+// (desconto: 0 = sem desconto). Sem esse campo, vale o desconto geral abaixo.
 const DESCONTO = 30;
 
 // A cada quantos segundos o banner troca para os próximos 3 produtos.
@@ -92,7 +94,7 @@ const PRODUTOS = [
     desc: "Espuma Hiper Soft muito macia e flexível, com revestimento que retém menos calor e reduz a transpiração.",
     dif: ["Espuma Hiper Soft", "Revestimento em tecido não tecido", "Antiácaro"],
     tamanhos: [["60×40 cm", 98.69, "2026100117155903", 6]] },
-  { nome: "Travesseiro Flocos", cat: "travesseiro", img: "trav-flocos",
+  { nome: "Travesseiro Flocos", cat: "travesseiro", img: "trav-flocos", desconto: 0,
     desc: "Produzido com flocos de espuma, que dão maciez e distribuem melhor a pressão sob a cabeça.",
     dif: ["Flocos de espuma", "Revestimento em tecido não tecido", "Antiácaro"],
     tamanhos: [["60×40 cm", 23.52, "1090710090", 10]] },
