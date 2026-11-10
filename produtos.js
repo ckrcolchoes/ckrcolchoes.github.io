@@ -101,7 +101,7 @@ const PRODUTOS = [
   { nome: "Suavencosto Sleep", cat: "acessorio", img: "suavencosto",
     desc: "Peça de espuma para se recostar com conforto. Ideal para leitura, TV e momentos de relaxamento.",
     dif: ["Capa em tecido 100% poliéster", "Espuma 100% poliuretano"],
-    tamanhos: [["40×40×55 cm", 131.03, "2026082516142107", 5]] },
+    tamanhos: [["40×40×55 cm", 131.03, "2026082516142107", 4]] },
   { nome: "Protetor de Colchão", cat: "acessorio", img: "protetor",
     desc: "Protetor impermeável: protege o colchão contra líquidos, suor e impurezas e aumenta a durabilidade.",
     dif: ["Impermeável", "Revestimento lateral em tecido de poliéster", "Antiácaro"],
