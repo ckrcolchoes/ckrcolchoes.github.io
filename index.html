@@ -199,7 +199,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
   <div class="intro">
     <div>
       <span class="tag">BLACK FRIDAY CKR</span>
-      <h1>Até <em id="pct">30%</em> OFF<br>em toda a loja</h1>
+      <h1>Até <em id="pct">30%</em> OFF<br>em produtos selecionados</h1>
       <p>Colchões, bases e travesseiros com preço de Black Friday. Passe o mouse para parar e clique para ver o produto.</p>
     </div>
     <img class="fachada" src="img/fachada.webp" alt="Fachada da loja CKR Colchões em Fortaleza">
@@ -246,7 +246,9 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 <script>
 const $=id=>document.getElementById(id);
 const R=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const novo=v=>Math.round(v*(100-DESCONTO))/100;
+/* Desconto por produto: usa p.desconto se existir (0 = sem desconto); senão, o DESCONTO geral */
+const descP=p=>(p&&p.desconto!=null)?p.desconto:DESCONTO;
+const novo=(v,p)=>Math.round(v*(100-descP(p)))/100;
 const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
 const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
 const CATS={todos:"Todos",colchao:"Colchões",base:"Bases",cabeceira:"Cabeceiras",travesseiro:"Travesseiros",acessorio:"Acessórios"};
@@ -256,7 +258,7 @@ const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCas
 const fotos=p=>[foto(p),...((typeof MINIS!=="undefined"&&MINIS[p.img])||[]).map(n=>"img/mini/"+n)];
 const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<button type="button" class="${j==0?"on":""}" data-f="${f}" aria-label="Foto ${j+1} de ${p.nome}"><img src="${f}" alt="" loading="lazy"></button>`).join("")}</div>`;
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
-const off=()=>DESCONTO?`<span class="off">-${DESCONTO}%</span>`:"";
+const off=p=>descP(p)?`<span class="off">-${descP(p)}%</span>`:"";
 /* Pix: lê as configurações do produtos.js (com valores padrão se faltarem) */
 const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº de parcelas sem juros no cartão
 $("parc").textContent=PARC;
@@ -351,9 +353,9 @@ $("pct").textContent=DESCONTO+"%";
 const BANNER=PRODUTOS.map((p,i)=>i).filter(i=>menor(PRODUTOS[i])&&!esgP(PRODUTOS[i]));
 const grupos=[];for(let i=0;i<BANNER.length;i+=3)grupos.push(BANNER.slice(i,i+3));
 let g=0,pausado=false;
-const slide=i=>{const p=PRODUTOS[i],t=menor(p);return `<div class="slide" data-i="${i}">${off()}
+const slide=i=>{const p=PRODUTOS[i],t=menor(p);return `<div class="slide" data-i="${i}">${off(p)}
 <div class="ph"><img src="${foto(p)}" alt="${p.nome}"></div><h3>${p.nome}</h3>
-${DESCONTO?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1]))}</div><small>${comPreco(p).length>1?"a partir de · ":""}${t[0]}</small></div>`};
+${descP(p)?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1],p))}</div><small>${comPreco(p).length>1?"a partir de · ":""}${t[0]}</small></div>`};
 $("dots").innerHTML=grupos.map(()=>"<i></i>").join("");
 function banner(){$("stage").innerHTML=grupos[g].map(slide).join("");[...$("dots").children].forEach((d,k)=>d.classList.toggle("on",k==g));}
 banner();
@@ -367,9 +369,9 @@ $("stage").onclick=e=>{const s=e.target.closest(".slide");if(s)abrir(+s.dataset.
 
 /* ---------- Catálogo ---------- */
 function card(p,i){const t=menor(p),el=document.createElement("article");el.className="card"+(esgP(p)?" esgotado":"");el.dataset.i=i;
-  el.innerHTML=`${esgP(p)?'<span class="off esg">Esgotado</span>':t?off():""}<div class="ph"><img src="${foto(p)}" alt="${p.nome}" loading="lazy"></div>${thumbs(p,"sm")}<h3>${p.nome}</h3><p>${p.desc}</p>
+  el.innerHTML=`${esgP(p)?'<span class="off esg">Esgotado</span>':t?off(p):""}<div class="ph"><img src="${foto(p)}" alt="${p.nome}" loading="lazy"></div>${thumbs(p,"sm")}<h3>${p.nome}</h3><p>${p.desc}</p>
   <div class="tams">${p.tamanhos.map(x=>`<span${esgT(x)?' class="sem"':''}>${x[0]}</span>`).join("")}</div>
-  ${t?`${DESCONTO?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1]))}</div><div class="ap">${comPreco(p).length>1?"a partir de":"à vista"}</div>`:`<div class="consulte">Consulte o preço</div>`}
+  ${t?`${descP(p)?`<div class="de">${R(t[1])}</div>`:""}<div class="por">${R(novo(t[1],p))}</div><div class="ap">${comPreco(p).length>1?"a partir de":"à vista"}</div>`:`<div class="consulte">Consulte o preço</div>`}
   <span class="btn dark">Ver detalhes</span>`;return el;}
 let catAtual="todos";
 function mostrar(c=catAtual){catAtual=c;const q=norm($("busca").value.trim());$("grid").innerHTML="";let n=0;
@@ -383,13 +385,13 @@ $("grid").onclick=e=>{const t=e.target.closest(".thumbs button");if(t){e.stopPro
 mostrar("todos");
 
 /* ---------- Detalhe do produto ---------- */
-function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1]):null;
+function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1],p):null;
   const disp=esgT(t)?"Esgotado":t[3]==null?"Consulte":t[3]<=2?`Últimas ${t[3]} un.`:"Em estoque";
   $("det").innerHTML=`<button class="x" onclick="fechar()" aria-label="Fechar">×</button>
-  <div class="dg"><div class="bigwrap"><div class="bigph">${esgT(t)?'<span class="off esg">Esgotado</span>':pr!=null?off():""}<img src="${foto(p)}" alt="${p.nome}">${fotos(p).length>1?'<button type="button" class="garr l" data-d="-1" aria-label="Foto anterior">‹</button><button type="button" class="garr r" data-d="1" aria-label="Próxima foto">›</button>':""}${thumbs(p,"")}</div></div>
+  <div class="dg"><div class="bigwrap"><div class="bigph">${esgT(t)?'<span class="off esg">Esgotado</span>':pr!=null?off(p):""}<img src="${foto(p)}" alt="${p.nome}">${fotos(p).length>1?'<button type="button" class="garr l" data-d="-1" aria-label="Foto anterior">‹</button><button type="button" class="garr r" data-d="1" aria-label="Próxima foto">›</button>':""}${thumbs(p,"")}</div></div>
   <div><div class="cat">${CATS[p.cat]}</div><h2>${p.nome}</h2>
   ${p.tamanhos.length>1?`<div class="tsel">${p.tamanhos.map((x,j)=>`<button class="${j==k?"on":""}" onclick="abrir(${i},${j})">${x[0]}${esgT(x)?" · esgotado":""}</button>`).join("")}</div>`:`<div class="cat" style="color:var(--muted);letter-spacing:.05em;margin-bottom:16px">${t[0]}</div>`}
-  <div class="pbox">${pr!=null?`${DESCONTO?`<span class="de">${R(t[1])}</span><span class="pct">-${DESCONTO}%</span>`:""}<div class="por">${R(pr)}</div>
+  <div class="pbox">${pr!=null?`${descP(p)?`<span class="de">${R(t[1])}</span><span class="pct">-${descP(p)}%</span>`:""}<div class="por">${R(pr)}</div>
     <div class="ent">ou <b>${PARC}x de ${R(pr/PARC)}</b> sem juros${PIXD?` · <b>${R(pixv(pr))}</b> no Pix (-${PIXD}%)`:""}</div>`:`<div class="consulte">Preço sob consulta</div><div class="ent">Fale com a gente pelo WhatsApp.</div>`}
     ${esgT(t)?`<div class="esgmsg">Esgotado no momento. Chame a gente e avisamos quando chegar.</div>`:""}
     <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn dark" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
@@ -462,15 +464,15 @@ function sugestoes(){
   for(let n=0;res.length<SUG_MAX&&filas.some(f=>f.length>n);n++)filas.forEach(f=>{if(f[n]&&res.length<SUG_MAX&&!res.some(x=>x.i==f[n].i))res.push(f[n])});
   if(!res.length)return "";
   return `<div class="sug"><h4>Aproveite e leve também</h4><small>Combine com o seu pedido (opcional)</small>${res.map(({i,k})=>{const p=PRODUTOS[i],t=p.tamanhos[k];
-    return `<div class="sg"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]} · ${R(novo(t[1]))}</small></div><button type="button" class="add" onclick="add(${i},${k})">+ Adicionar</button></div>`}).join("")}</div>`;}
+    return `<div class="sg"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]} · ${R(novo(t[1],p))}</small></div><button type="button" class="add" onclick="add(${i},${k})">+ Adicionar</button></div>`}).join("")}</div>`;}
 function desenhar(){
   $("cnt").textContent=cart.reduce((s,c)=>s+c.q,0);
   $("itens").innerHTML=cart.length?cart.map((c,n)=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];
-    return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1])*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
+    return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1],p)*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
   $("itens").innerHTML+=sugestoes();
-  const total=cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1])*c.q,0);
+  const total=cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1],PRODUTOS[c.i])*c.q,0);
   if(!cart.length)etapa=0;
-  const tp=pixv(total),linhas=cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1])*c.q)}`}).join("\n");
+  const tp=pixv(total),linhas=cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1],p)*c.q)}`}).join("\n");
   if(!cart.length){$("tot").innerHTML="";return;}
   if(etapa==1){
     const msg="Olá! Fiz o pagamento deste pedido por Pix:\n"+linhas+`\nTotal: ${R(total)}`+(PIXD?`\nDesconto Pix (-${PIXD}%): ${R(tp)}`:"")+`\nValor pago no Pix: ${R(tp)}\nVou enviar o comprovante aqui.`+DADOS_NOTA;
