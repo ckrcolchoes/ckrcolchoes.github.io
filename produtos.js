@@ -23,8 +23,7 @@ const BANNER_SEGUNDOS = 3;
 // produto: nome EXATAMENTE como está em PRODUTOS abaixo
 // tamanho: posição do tamanho na lista (0 = primeiro, 1 = segundo...)
 // O "de" é o preço da tabela e o "por" é o preço com desconto (DESCONTO geral,
-// ou o campo desconto: do produto). Para a oferta ter um desconto só dela,
-// coloque desconto: NUMERO no produto lá embaixo.
+// o campo desconto: do produto ou o preço fixo promo: do produto).
 // ativa: false = não mostra o popup | umaVezPorSessao: false = aparece em toda visita/recarregada
 const OFERTA = {
   ativa: true,
@@ -58,7 +57,11 @@ const PRODUTOS = [
   { nome: "Airtech Spring Pocket", cat: "colchao", img: "airtech-spring",
     desc: "Molas ensacadas individualmente: sustentação para o corpo e menos transferência de movimento.",
     dif: ["Molas ensacadas individualmente", "Menos transferência de movimento", "Revestimento em malha"],
-    tamanhos: [["Solteiro 88×188", 1156.74, "2026082516021805", 2], ["Casal 138×188", 1615.61, "2026082516021806", 2]] },
+    tamanhos: [
+    ["Solteiro 88×188", 1156.74, "2026082516021805", 1],
+    ["Solteirao 108×198", null, "2026101214262931", null], 
+    ["Casal 138×188", 1615.61, "2026082516021806", 2],
+    ["Casal 158×198", null, "2026151512253625", null]] },
   { nome: "Fit Spring", cat: "colchao", img: "fit-spring",
     desc: "Sistema de molas com bordado em matelassê e microporos para a passagem de ar.",
     dif: ["Sistema de molas", "Bordado em matelassê", "Tecnologia de microporos", "Tecido de malha"],
@@ -70,19 +73,25 @@ const PRODUTOS = [
   { nome: "Physical Nanolastic Ortopillow", cat: "colchao", img: "physical-nano",
     desc: "Espuma Nanolastic com Ortopillow, que funciona como um travesseiro sobre o colchão. Alivia pontos de pressão.",
     dif: ["Camada Ortopillow", "Espuma certificada 100% poliuretano", "Sistema No Turn"],
-    tamanhos: [["Solteiro 88×188", 1021.26, "2026082016444301", 2], ["Solteirão 108×198", 1269.56, "2026100117195903", 1], ["Casal 138×188", 1532.40, "2026100117195900", 2]] },
+    tamanhos: [["Solteiro 88×188", 1021.26, "2026082016444301", 1], ["Solteirão 108×198", 1269.56, "2026100117195903", 0], 
+    ["Casal 138×188", 1532.40, "2026100117195900", 2]] },
   { nome: "Physical Ultra Resistente", cat: "colchao", img: "physical-ultra",
     desc: "Tecido em poliéster e fibra de alta resistência com espuma firme. Tratamento contra ácaros e fungos.",
     dif: ["Tecido em poliéster com matelassê", "Espuma firme certificada", "Tratamento antiácaro"],
-    tamanhos: [["Solteiro 88×188", 799.30, "2026082516021800", 1], ["Casal 138×188", 1247.43, "2026053008483404", 3]] },
+    tamanhos: [["Solteiro 78×188", null, "2026082516021855", null],["Solteiro 88×188", 799.30, "2026082516021800", 2], 
+    ["Casal 138×188", 1247.43, "2026053008483404", 3]] },
   { nome: "Physical Resistente Liso", cat: "colchao", img: "physical-liso",
     desc: "Tecido em poliéster e espuma firme certificada. Ótimo para o dia a dia.",
     dif: ["Tecido em poliéster", "Espuma certificada 100% poliuretano", "Tratamento antiácaro"],
     tamanhos: [["Solteiro 88×188", 510.12, "CON-006", 1], ["Casal 138×188", 898.86, "2026050209463100", 2]] },
   { nome: "New Freedom", cat: "colchao", img: "new-freedom",
-    desc: "Molas superpocket ensacadas, pillow top em espuma viscoelástica e sistema No Turn: a combinação de qualidade, beleza e conforto.",
-    dif: ["Molas superpocket ensacadas individualmente", "Pillow top em espuma viscoelástica", "Camada de sustentação em espuma D33", "Sistema No Turn: não precisa virar", "Tecido de malha super soft"],
-    tamanhos: [["Casal 138×188", 2557.54, "1041691790", 0]] },
+  desc: "Molas superpocket ensacadas, pillow top em espuma viscoelástica e sistema No Turn: a combinação de qualidade, beleza e conforto.",
+  dif: ["Molas superpocket ensacadas individualmente", "Pillow top em espuma viscoelástica", "Camada de sustentação em espuma D33", "Sistema No Turn: não precisa virar", "Tecido de malha super soft"],
+  tamanhos: [
+    ["Solteiro 88×188", null, "NEW-FREEDOM-88", null],
+    ["Casal 138×188", 2557.54, "1041691790", 0],
+    ["Queen 158×198", null, "NEW-FREEDOM-158", null]
+  ] },
   { nome: "Star Black", cat: "colchao", img: "star-black",
     desc: "Base de molas ensacadas com placa EPS, que dá mais estabilidade ao deitar. Camada de conforto em espuma D26.",
     dif: ["Estrutura de molas ensacadas", "Lâmina de espuma viscoelástica", "Bordado em espuma convencional", "Lâmina EPS"],
@@ -106,7 +115,8 @@ const PRODUTOS = [
   { nome: "Box Sommier Pop", cat: "base", img: "base-sommier",
     desc: "Base sommier para o seu colchão, com estrutura de madeira tratada. Foto ilustrativa.",
     dif: ["Estrutura de madeira tratada", "Camada de espuma na superfície", "Pés rosqueáveis"],
-    tamanhos: [["Solteiro 88×188×23", 382.04, "2026082516021807", 7], ["Casal 138×188×23", 528.28, "2026082516021808", 7]] },
+    tamanhos: [["Solteiro 88×188×23", 382.04, "2026082516021807", 7], ["Solteirao 108×198×23", null, "2026082516021856", null],
+    ["Casal 138×188×23", 528.28, "2026082516021808", 5]] },
   { nome: "Cabeceira Piave Veludo Bege", cat: "cabeceira", img: "cabeceira-piave-bege",
     desc: "Revestida em veludo 100% poliéster, dá um toque moderno e agradável ao ambiente. Foto ilustrativa com a cor adaptada ao bege.",
     dif: ["Veludo 100% poliéster", "Placa de espuma certificada", "Estrutura de madeira de reflorestamento"],
