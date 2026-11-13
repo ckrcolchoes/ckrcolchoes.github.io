@@ -1,6 +1,10 @@
 // Miniaturas (fotos de detalhe) por produto. Chave = campo img do produto em produtos.js
 // Arquivos em img/mini/. Para trocar/adicionar, edite a lista do produto.
 const MINIS = {
+ "soft-d20": [
+  "soft-d20-1.webp",
+  "soft-d20-2.webp"
+ ],
  "airtech-100": [
   "airtech-100-1.webp",
   "airtech-100-2.webp"
