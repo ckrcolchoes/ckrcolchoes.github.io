@@ -45,7 +45,7 @@ const PRODUTOS = [
   { nome: "Soft D-20", cat: "colchao", img: "soft-d20", promo: 299.99,
     desc: "Colchão de espuma D20 da linha Soft Pluma, com tecido estampado. Opção leve e econômica para o dia a dia.",
     dif: ["Espuma D20", "Tecido estampado", "Ótimo preço"],
-    tamanhos: [["Solteiro 88×188×12", 510.00, "SOFT-D20-88", null]] },
+    tamanhos: [["Solteiro 88×188×12", 510.00, "2026091512265001", 4]] },
   { nome: "Airtech 1.0.0", cat: "colchao", img: "airtech-100",
     desc: "Revestimento em malha com tecnologia de microporos e camada de espuma D33. Conforto e boa respirabilidade.",
     dif: ["Revestimento em malha", "Bordado em matelassê", "Tecnologia de microporos", "Lâmina de EPS"],
