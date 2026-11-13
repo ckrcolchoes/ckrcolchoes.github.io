@@ -188,6 +188,29 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .garr{position:absolute;top:calc(50% - 20px);width:40px;height:40px;border-radius:50%;border:0;background:#0b1530d0;color:#fff;font-size:24px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0 0 3px}
 .garr:hover{background:var(--blue)}.garr.l{left:10px}.garr.r{right:10px}
 .lnk{background:none;border:0;color:var(--blue);font:inherit;cursor:pointer;margin-top:10px;width:100%;padding:6px}
+/* OFERTA DA SEMANA (popup ao abrir) */
+.ofv{position:fixed;inset:0;background:#000c;z-index:70;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.ofv.on{display:flex}
+.ofc{position:relative;width:min(860px,100%);display:grid;grid-template-columns:1fr 1fr;background:radial-gradient(circle at 15% 0,#24357a 0,var(--navy) 60%,#05070f);color:#fff;border-radius:26px;overflow:hidden;box-shadow:0 30px 80px #000c;animation:in .45s cubic-bezier(.2,.8,.2,1)}
+.ofc .x{background:#fff;color:var(--navy);z-index:4}
+.ofimg{background:#fff;display:grid;place-items:center;padding:28px;position:relative;min-height:300px}
+.ofimg img{max-width:100%;max-height:340px;mix-blend-mode:multiply;animation:flutua 3.2s ease-in-out infinite}
+@keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ofsel{position:absolute;top:16px;left:16px;background:var(--red);color:#fff;font-weight:900;font-size:22px;padding:8px 14px;border-radius:12px;transform:rotate(-4deg);box-shadow:0 6px 16px #e5363b66}
+.ofinfo{padding:34px 30px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.ofinfo .tag{align-self:flex-start;animation:pulsatxt 1.6s ease-in-out infinite}
+.ofinfo h2{font-family:Georgia,serif;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:10px 0 2px;padding:0}
+.ofinfo .oft{color:#c8d3f0;font-size:15px}
+.ofde{margin-top:14px;font-size:17px;color:#aab4cf}.ofde s{color:#ff9a9d}
+.ofpor{font-family:Georgia,serif;font-size:clamp(40px,7vw,58px);font-weight:800;color:var(--gold);line-height:1.05}
+.ofeco{display:inline-block;background:#1faa5933;color:#7df0ae;font-weight:700;font-size:14px;padding:4px 12px;border-radius:99px;margin:6px 0 4px;align-self:flex-start}
+.ofcond{color:#c8d3f0;font-size:14px}
+.ofacts{display:grid;gap:10px;margin-top:16px}
+.ofacts .btn{padding:14px 20px;font-size:16px}
+.ofacts .lnk{color:#c8d3f0;margin-top:0}
+.ofrod{color:#8f9bbd;font-size:12px;margin-top:4px}
+@media(max-width:720px){.ofc{grid-template-columns:1fr;margin:auto}.ofimg{min-height:0;padding:44px 18px 14px}.ofimg img{max-height:200px}.ofinfo{padding:20px 20px 24px}}
+@media(prefers-reduced-motion:reduce){.ofimg img,.ofinfo .tag{animation:none}}
 </style>
 </head>
 <body>
@@ -256,8 +279,10 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 const $=id=>document.getElementById(id);
 const R=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 /* Desconto por produto: usa p.desconto se existir (0 = sem desconto); senão, o DESCONTO geral */
-const descP=p=>(p&&p.desconto!=null)?p.desconto:DESCONTO;
-const novo=(v,p)=>Math.round(v*(100-descP(p)))/100;
+/* Preço promocional fixo: se o produto tiver  promo: 299.99  (use só em produto com 1 tamanho),
+   esse é o preço "por" e a porcentagem do selo é calculada sozinha. */
+const descP=p=>(p&&p.promo!=null)?Math.round((1-p.promo/p.tamanhos[0][1])*100):(p&&p.desconto!=null)?p.desconto:DESCONTO;
+const novo=(v,p)=>(p&&p.promo!=null)?p.promo:Math.round(v*(100-descP(p)))/100;
 const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
 const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
 const CATS={todos:"Todos",colchao:"Colchões",base:"Bases",cabeceira:"Cabeceiras",travesseiro:"Travesseiros",acessorio:"Acessórios"};
@@ -502,6 +527,38 @@ function desenhar(){
       <button type="button" role="radio" aria-checked="${pay!="pix"}" class="po ${pay!="pix"?"on":""}" onclick="setPay('cartao')"><i></i><span><b>Cartão de crédito</b><small>até ${PARC}x de ${R(total/PARC)} sem juros</small></span></button>
     </div>
     ${pay=="pix"?`<button type="button" class="btn" style="display:block;width:100%" onclick="irPix()">Pagar com Pix</button>`:`<a class="btn" style="display:block" target="_blank" rel="noopener" href="${wa(msgC)}">Finalizar no WhatsApp</a>`}`;}
+/* ---------- Oferta da Semana (popup ao abrir o site) ----------
+   Configure no produtos.js com  const OFERTA = {...}  (veja o exemplo lá).
+   Se não existir, usa os valores padrão abaixo. */
+(function(){
+  const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true},typeof OFERTA!=="undefined"?OFERTA:{});
+  if(!c.ativa)return;
+  const i=PRODUTOS.findIndex(p=>norm(p.nome)==norm(c.produto));if(i<0)return;
+  const p=PRODUTOS[i],k=Math.min(c.tamanho||0,p.tamanhos.length-1),t=p.tamanhos[k];
+  if(t[1]==null||esgT(t))return;                       // sem preço ou esgotado: não mostra
+  const de=t[1],por=novo(t[1],p),pct=descP(p);
+  try{if(c.umaVezPorSessao&&sessionStorage.getItem("ofv"))return}catch(e){}
+  const el=document.createElement("div");el.className="ofv";el.id="ofv";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-label",c.titulo);
+  el.innerHTML=`<div class="ofc"><button class="x" type="button" aria-label="Fechar oferta">×</button>
+    <div class="ofimg">${pct?`<span class="ofsel">-${pct}%</span>`:""}<img src="${foto(p)}" alt="${p.nome}"></div>
+    <div class="ofinfo"><span class="tag">${c.titulo.toUpperCase()}</span>
+      <h2>${p.nome}</h2><div class="oft">${t[0]}</div>
+      ${pct?`<div class="ofde">De <s>${R(de)}</s> por apenas</div>`:`<div class="ofde">Por apenas</div>`}
+      <div class="ofpor">${R(por)}</div>
+      ${pct?`<span class="ofeco">Você economiza ${R(de-por)}</span>`:""}
+      <div class="ofcond">ou ${PARC}x de ${R(por/PARC)} sem juros${PIXD?` · ${R(pixv(por))} no Pix`:""}</div>
+      ${c.condicao?`<div class="ofcond">${c.condicao}</div>`:""}
+      <div class="ofacts"><button type="button" class="btn" id="ofadd">🛍 Quero essa oferta</button><button type="button" class="lnk" id="ofver">Ver detalhes do produto</button></div>
+      <div class="ofrod">${c.rodape}</div></div></div>`;
+  document.body.append(el);
+  const fecha=()=>{el.classList.remove("on");try{sessionStorage.setItem("ofv","1")}catch(e){}};
+  el.onclick=e=>{if(e.target===el)fecha()};
+  el.querySelector(".x").onclick=fecha;
+  $("ofadd").onclick=()=>{fecha();add(i,k)};
+  $("ofver").onclick=()=>{fecha();abrir(i,k)};
+  document.addEventListener("keydown",e=>{if(e.key=="Escape")fecha()});
+  setTimeout(()=>el.classList.add("on"),500);
+})();
 $("cartbtn").onclick=()=>$("dr").classList.add("on");$("drx").onclick=()=>$("dr").classList.remove("on");
 desenhar();
 </script>
