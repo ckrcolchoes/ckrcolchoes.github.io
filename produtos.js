@@ -84,13 +84,13 @@ const PRODUTOS = [
     desc: "Tecido em poliéster e espuma firme certificada. Ótimo para o dia a dia.",
     dif: ["Tecido em poliéster", "Espuma certificada 100% poliuretano", "Tratamento antiácaro"],
     tamanhos: [["Solteiro 88×188", 510.12, "CON-006", 1], ["Casal 138×188", 898.86, "2026050209463100", 2]] },
-  { nome: "freedom", cat: "colchao", img: "freedom",
+  { nome: "Freedom", cat: "colchao", img: "Freedom",
   desc: "Molas superpocket ensacadas, pillow top em espuma viscoelástica e sistema No Turn: a combinação de qualidade, beleza e conforto.",
   dif: ["Molas superpocket ensacadas individualmente", "Pillow top em espuma viscoelástica", "Camada de sustentação em espuma D33", "Sistema No Turn: não precisa virar", "Tecido de malha super soft"],
   tamanhos: [
-    ["Solteiro 88×188", null, "freedom-88", null],
+    ["Solteiro 88×188", null, "Freedom-88", null],
     ["Casal 138×188", 2418.14, "1041691790", 1],
-    ["Queen 158×198", null, "freedom-158", null]
+    ["Queen 158×198", null, "Freedom-158", null]
   ] },
   { nome: "Star Black", cat: "colchao", img: "star-black",
     desc: "Base de molas ensacadas com placa EPS, que dá mais estabilidade ao deitar. Camada de conforto em espuma D26.",
