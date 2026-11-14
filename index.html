@@ -188,7 +188,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .garr{position:absolute;top:calc(50% - 20px);width:40px;height:40px;border-radius:50%;border:0;background:#0b1530d0;color:#fff;font-size:24px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0 0 3px}
 .garr:hover{background:var(--blue)}.garr.l{left:10px}.garr.r{right:10px}
 .lnk{background:none;border:0;color:var(--blue);font:inherit;cursor:pointer;margin-top:10px;width:100%;padding:6px}
-/* OFERTA DA SEMANA (popup ao abrir) */
+/* OFERTA EM DESTAQUE (popup ao abrir o site) */
 .ofv{position:fixed;inset:0;background:#000c;z-index:70;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
 .ofv.on{display:flex}
 .ofc{position:relative;width:min(860px,100%);display:grid;grid-template-columns:1fr 1fr;background:radial-gradient(circle at 15% 0,#24357a 0,var(--navy) 60%,#05070f);color:#fff;border-radius:26px;overflow:hidden;box-shadow:0 30px 80px #000c;animation:in .45s cubic-bezier(.2,.8,.2,1)}
@@ -211,6 +211,16 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .ofrod{color:#8f9bbd;font-size:12px;margin-top:4px}
 @media(max-width:720px){.ofc{grid-template-columns:1fr;margin:auto}.ofimg{min-height:0;padding:44px 18px 14px}.ofimg img{max-height:200px}.ofinfo{padding:20px 20px 24px}}
 @media(prefers-reduced-motion:reduce){.ofimg img,.ofinfo .tag{animation:none}}
+/* Mini oferta no canto */
+.ofmini{position:fixed;left:16px;bottom:16px;z-index:35;display:flex;align-items:center;background:var(--navy);color:#fff;border-radius:16px;box-shadow:0 10px 30px #0008;border:2px solid var(--gold);transform:translateY(140%);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s;max-width:min(280px,calc(100vw - 100px))}
+.ofmini.on{transform:none;opacity:1;pointer-events:auto}
+.ofmini .mb{display:flex;gap:10px;align-items:center;background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:8px 12px 8px 8px;text-align:left}
+.ofmini img{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:10px;flex:none}
+.ofmini span{display:grid;line-height:1.2}
+.ofmini small{color:var(--gold);font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.ofmini b{font-size:14px}
+.ofmini em{font-style:normal;font-weight:800;color:var(--gold);font-size:17px}
+.ofmini .mx{position:absolute;top:-10px;right:-10px;width:24px;height:24px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 8px #0006}
 </style>
 </head>
 <body>
@@ -279,10 +289,8 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 const $=id=>document.getElementById(id);
 const R=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 /* Desconto por produto: usa p.desconto se existir (0 = sem desconto); senão, o DESCONTO geral */
-/* Preço promocional fixo: se o produto tiver  promo: 299.99  (use só em produto com 1 tamanho),
-   esse é o preço "por" e a porcentagem do selo é calculada sozinha. */
-const descP=p=>(p&&p.promo!=null)?Math.round((1-p.promo/p.tamanhos[0][1])*100):(p&&p.desconto!=null)?p.desconto:DESCONTO;
-const novo=(v,p)=>(p&&p.promo!=null)?p.promo:Math.round(v*(100-descP(p)))/100;
+const descP=p=>(p&&p.desconto!=null)?p.desconto:DESCONTO;
+const novo=(v,p)=>Math.round(v*(100-descP(p)))/100;
 const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
 const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
 const CATS={todos:"Todos",colchao:"Colchões",base:"Bases",cabeceira:"Cabeceiras",travesseiro:"Travesseiros",acessorio:"Acessórios"};
@@ -527,17 +535,17 @@ function desenhar(){
       <button type="button" role="radio" aria-checked="${pay!="pix"}" class="po ${pay!="pix"?"on":""}" onclick="setPay('cartao')"><i></i><span><b>Cartão de crédito</b><small>até ${PARC}x de ${R(total/PARC)} sem juros</small></span></button>
     </div>
     ${pay=="pix"?`<button type="button" class="btn" style="display:block;width:100%" onclick="irPix()">Pagar com Pix</button>`:`<a class="btn" style="display:block" target="_blank" rel="noopener" href="${wa(msgC)}">Finalizar no WhatsApp</a>`}`;}
-/* ---------- Oferta da Semana (popup ao abrir o site) ----------
-   Configure no produtos.js com  const OFERTA = {...}  (veja o exemplo lá).
-   Se não existir, usa os valores padrão abaixo. */
+/* ---------- Oferta em destaque (popup ao abrir + mini no canto) ---------- */
 (function(){
-  const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true},typeof OFERTA!=="undefined"?OFERTA:{});
+  const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true,miniInicio:8,miniDuracao:12,miniIntervalo:30,miniVezes:4},typeof OFERTA!=="undefined"?OFERTA:{});
   if(!c.ativa)return;
   const i=PRODUTOS.findIndex(p=>norm(p.nome)==norm(c.produto));if(i<0)return;
   const p=PRODUTOS[i],k=Math.min(c.tamanho||0,p.tamanhos.length-1),t=p.tamanhos[k];
   if(t[1]==null||esgT(t))return;                       // sem preço ou esgotado: não mostra
   const de=t[1],por=novo(t[1],p),pct=descP(p);
-  try{if(c.umaVezPorSessao&&sessionStorage.getItem("ofv"))return}catch(e){}
+  let visto=false;try{visto=c.umaVezPorSessao&&!!sessionStorage.getItem("ofv")}catch(e){}
+  const zap=wa(`Olá! Quero a oferta do ${p.nome} (${t[0]}) por ${R(por)}. Ref. ${t[2]}`);
+
   const el=document.createElement("div");el.className="ofv";el.id="ofv";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-label",c.titulo);
   el.innerHTML=`<div class="ofc"><button class="x" type="button" aria-label="Fechar oferta">×</button>
     <div class="ofimg">${pct?`<span class="ofsel">-${pct}%</span>`:""}<img src="${foto(p)}" alt="${p.nome}"></div>
@@ -548,16 +556,40 @@ function desenhar(){
       ${pct?`<span class="ofeco">Você economiza ${R(de-por)}</span>`:""}
       <div class="ofcond">ou ${PARC}x de ${R(por/PARC)} sem juros${PIXD?` · ${R(pixv(por))} no Pix`:""}</div>
       ${c.condicao?`<div class="ofcond">${c.condicao}</div>`:""}
-      <div class="ofacts"><button type="button" class="btn" id="ofadd">🛍 Quero essa oferta</button><button type="button" class="lnk" id="ofver">Ver detalhes do produto</button></div>
+      <div class="ofacts">
+        <a class="btn" id="ofwa" target="_blank" rel="noopener" href="${zap}">💬 Comprar no WhatsApp</a>
+        <button type="button" class="btn" id="ofadd" style="background:#fff;color:var(--navy)">🛍 Adicionar ao carrinho</button>
+        <button type="button" class="lnk" id="ofver">Ver detalhes do produto</button></div>
       <div class="ofrod">${c.rodape}</div></div></div>`;
-  document.body.append(el);
-  const fecha=()=>{el.classList.remove("on");try{sessionStorage.setItem("ofv","1")}catch(e){}};
+
+  const mini=document.createElement("div");mini.className="ofmini";mini.id="ofmini";
+  mini.innerHTML=`<button type="button" class="mx" aria-label="Fechar">×</button><button type="button" class="mb" aria-label="Abrir oferta ${p.nome}"><img src="${foto(p)}" alt=""><span><small>${c.titulo}</small><b>${p.nome}</b><em>${R(por)}</em></span></button>`;
+  document.body.append(el,mini);
+
+  /* mini no canto: aparece, some, volta algumas vezes e desaparece de vez */
+  let ciclo=false,vezes=0,tm=[];
+  const esconde=()=>mini.classList.remove("on");
+  const ciclar=()=>{
+    if(vezes>=c.miniVezes)return;
+    if(el.classList.contains("on")||$("ov").classList.contains("on")){tm.push(setTimeout(ciclar,5000));return}
+    vezes++;mini.classList.add("on");
+    tm.push(setTimeout(()=>{esconde();tm.push(setTimeout(ciclar,c.miniIntervalo*1000))},c.miniDuracao*1000));
+  };
+  const iniciaMini=()=>{if(ciclo)return;ciclo=true;tm.push(setTimeout(ciclar,c.miniInicio*1000))};
+
+  const abrePop=()=>{esconde();el.classList.add("on")};
+  const fecha=()=>{el.classList.remove("on");try{sessionStorage.setItem("ofv","1")}catch(e){}iniciaMini()};
   el.onclick=e=>{if(e.target===el)fecha()};
   el.querySelector(".x").onclick=fecha;
+  $("ofwa").onclick=fecha;
   $("ofadd").onclick=()=>{fecha();add(i,k)};
   $("ofver").onclick=()=>{fecha();abrir(i,k)};
-  document.addEventListener("keydown",e=>{if(e.key=="Escape")fecha()});
-  setTimeout(()=>el.classList.add("on"),500);
+  mini.querySelector(".mb").onclick=abrePop;
+  mini.querySelector(".mx").onclick=esconde;
+  document.addEventListener("keydown",e=>{if(e.key=="Escape"&&el.classList.contains("on"))fecha()});
+
+  if(visto)iniciaMini();                                // já viu o popup nesta sessão: só o mini
+  else setTimeout(()=>el.classList.add("on"),500);
 })();
 $("cartbtn").onclick=()=>$("dr").classList.add("on");$("drx").onclick=()=>$("dr").classList.remove("on");
 desenhar();
