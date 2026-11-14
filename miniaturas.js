@@ -73,9 +73,9 @@ const MINIS = {
   "mochila-z1.webp",
   "mochila-z2.webp"
  ],
- "new-freedom": [
-  "new-freedom-1.webp",
-  "new-freedom-z2.webp"
+ "freedom": [
+  "freedom-1.webp",
+  "freedom-z2.webp"
  ],
  "physical-liso": [
   "physical-liso-1.webp",
