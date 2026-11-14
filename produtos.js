@@ -65,7 +65,7 @@ const PRODUTOS = [
   dif: ["Molas superpocket ensacadas individualmente", "Pillow top em espuma viscoelástica", "Camada de sustentação em espuma D33", "Sistema No Turn: não precisa virar", "Tecido de malha super soft"],
   tamanhos: [
     ["Solteiro 88×188", null, "FREEDOM-88", null],
-    ["Casal 138×188", 2557.54, "1041691790", 0],
+    ["Casal 138×188", 2418.15, "1041691790", 1],
     ["Queen 158×198", null, "FREEDOM-158", null]
   ] },
   { nome: "Star Black", cat: "colchao", img: "star-black",
