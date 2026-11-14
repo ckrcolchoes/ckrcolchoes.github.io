@@ -16,12 +16,36 @@ const DESCONTO = 30;
 // A cada quantos segundos o banner troca para os próximos 3 produtos.
 const BANNER_SEGUNDOS = 3;
 
+// ------------------------------------------------------------
+//  OFERTA EM DESTAQUE (popup ao abrir o site + mini no canto)
+//  produto: nome EXATO do produto na lista abaixo
+//  mini*: tempos em segundos
+// ------------------------------------------------------------
+const OFERTA = {
+  ativa: true,                 // false desliga o popup e o mini
+  produto: "Soft D-20",
+  tamanho: 0,                  // 0 = primeiro tamanho da lista
+  titulo: "Oferta da Semana",
+  condicao: "",                // texto extra opcional (ex.: "Válido até domingo")
+  rodape: "Enquanto durar o estoque · Entrega grátis em Fortaleza",
+  umaVezPorSessao: true,       // false = o popup grande abre em toda visita/recarga
+  miniInicio: 8,               // depois de fechar o popup, o mini aparece após X s
+  miniDuracao: 12,             // o mini fica X s na tela
+  miniIntervalo: 30,           // pausa de X s até o mini voltar
+  miniVezes: 4                 // quantas vezes o mini aparece; depois some de vez
+};
+
 // cat: "colchao" | "base" | "cabeceira" | "travesseiro" | "acessorio"
 // tamanhos: [rótulo, preço da tabela, referência, estoque]
 //   preço = null  -> aparece "Consulte o preço" (coloque o número depois)
 //   estoque = null -> não mostra quantidade
+// promo: preço promocional fixo (só em produto com 1 tamanho); o % do selo é calculado sozinho
 // dif: lista de diferenciais mostrados na tela do produto
 const PRODUTOS = [
+  { nome: "Soft D-20", cat: "colchao", img: "soft-d20", promo: 249.99,
+    desc: "Colchão de espuma D20, leve e econômico para o dia a dia.",
+    dif: ["Espuma D20", "Opção econômica"],
+    tamanhos: [["Solteiro 88×188", 399.00, "REF-SOFT-D20", 2]] },
   { nome: "Airtech 1.0.0", cat: "colchao", img: "airtech-100",
     desc: "Revestimento em malha com tecnologia de microporos e camada de espuma D33. Conforto e boa respirabilidade.",
     dif: ["Revestimento em malha", "Bordado em matelassê", "Tecnologia de microporos", "Lâmina de EPS"],
