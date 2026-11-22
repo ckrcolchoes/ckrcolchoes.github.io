@@ -119,7 +119,7 @@ const PRODUTOS = [
   { nome: "Box Box Standard", cat: "base", img: "base-sommier-1",
     desc: "Base para o seu colchão, com estrutura de madeira tratada. Foto ilustrativa.",
     dif: ["Estrutura de madeira tratada", "Camada de espuma na superfície", "Pés rosqueáveis"],
-    tamanhos: [["Solteiro 88×188×30", null, "2026082516021599", 0], ["Casal 158×198×30 (preto)", 938.45, "2026082516021699", 1],
+    tamanhos: [["Casal 158×198×30 (preto)", 938.45, "2026082516021699", 1], ["Solteiro 88×188×30", null, "2026082516021599", 0], 
     ["Casal 138×188×23", null, "202608251602199", 0]] },  
   { nome: "Box Sommier Pop", cat: "base", img: "base-sommier",
     desc: "Base sommier para o seu colchão, com estrutura de madeira tratada. Foto ilustrativa.",
