@@ -229,8 +229,8 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .fform h4{font-family:Georgia,serif;font-size:19px;margin-top:8px}
 .fld{display:grid;gap:4px}
 .fld span{font-size:13px;color:var(--muted);font-weight:600}
-.fld input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid #8886;background:var(--card);color:var(--ink);font-size:15px;outline:none}
-.fld input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1e4fa333}
+.fld input,.fld select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid #8886;background:var(--card);color:var(--ink);font-size:15px;outline:none}
+.fld input:focus,.fld select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1e4fa333}
 .fld input[readonly]{opacity:.75}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cepst{color:var(--muted);font-size:12px;min-height:14px}
@@ -250,6 +250,8 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .fim h4{font-family:Georgia,serif;font-size:24px}
 .fim p{font-size:14px;color:var(--muted);line-height:1.5}
 .fim .aviso{text-align:left}
+/* PARCELAS DO CARTÃO */
+.parcs{margin:0 0 12px}
 </style>
 </head>
 <body>
@@ -341,7 +343,7 @@ const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<b
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
 const off=p=>descP(p)?`<span class="off">-${descP(p)}%</span>`:"";
 /* Pagamento: lê as configurações do produtos.js (com valores padrão se faltarem) */
-const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº de parcelas sem juros no cartão de crédito
+const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº MÁXIMO de parcelas sem juros no cartão de crédito
 $("parc").textContent=PARC;
 const PIXD=(typeof DESCONTO_PIX!=="undefined"&&DESCONTO_PIX>0)?DESCONTO_PIX:0;   // 0 = sem desconto no Pix
 const pixv=v=>Math.round(v*(100-PIXD))/100;
@@ -420,6 +422,7 @@ document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").cla
 
 /* ---------- Carrinho ---------- */
 let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário | 3 = pedido enviado
+let parcelas=PARC;               // parcelas escolhidas no cartão de crédito
 let ultimaMsg="";                // última mensagem enviada ao WhatsApp (só na memória)
 const MIN_ENTREGA=1000;          // entrega só a partir deste valor
 /* Faixas de CEP atendidas (5 primeiros dígitos) */
@@ -432,13 +435,15 @@ const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(
 const totalPedido=()=>cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1],PRODUTOS[c.i])*c.q,0);
 const linhasPedido=()=>cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1],p)*c.q)}`}).join("\n");
 function setPay(f){pay=f;desenhar();}
+function setParc(n){parcelas=Math.min(Math.max(1,n),PARC);desenhar();}
 function irForm(){etapa=2;desenhar();$("tot").scrollTop=0;}
 function voltar(){etapa=0;desenhar();}
-function concluir(){cart=[];F=F0();ultimaMsg="";etapa=0;pay="pix";desenhar();$("dr").classList.remove("on");}
+function concluir(){cart=[];F=F0();ultimaMsg="";etapa=0;pay="pix";parcelas=PARC;desenhar();$("dr").classList.remove("on");}
+const textoParc=(t,n)=>n==1?`1x de ${R(t)} (à vista no cartão)`:`${n}x de ${R(t/n)} sem juros`;
 const resumoPag=t=>pay=="pix"?`Pix: ${R(pixv(t))}${PIXD?` (-${PIXD}% no Pix)`:""}`
-  :pay=="credito"?`Cartão de crédito: ${R(t)} em até ${PARC}x de ${R(t/PARC)} sem juros`
+  :pay=="credito"?`Cartão de crédito: ${R(t)} em ${textoParc(t,parcelas)}`
   :`Cartão de débito: ${R(t)} à vista`;
-const nomePag=()=>pay=="pix"?"Pix":pay=="credito"?"Cartão de crédito":"Cartão de débito";
+const nomePag=()=>pay=="pix"?"Pix":pay=="credito"?`Cartão de crédito em ${parcelas}x`:"Cartão de débito";
 function cpfOk(c){c=soNum(c);if(c.length!=11||/^(\d)\1+$/.test(c))return false;
   for(let t=9;t<11;t++){let s=0;for(let i=0;i<t;i++)s+=c[i]*(t+1-i);if((s*10)%11%10!=c[t])return false}return true}
 /* máscaras */
@@ -598,14 +603,16 @@ function desenhar(){
   if(etapa==3){$("tot").innerHTML=fimHtml();return;}
   if(etapa==2){if(!$("fform"))$("tot").innerHTML=formHtml();atualizaEntrega();return;}
   const op=(k,tit,sub,extra="")=>`<button type="button" role="radio" aria-checked="${pay==k}" class="po ${pay==k?"on":""}" onclick="setPay('${k}')"><i></i><span><b>${tit}${extra}</b><small>${sub}</small></span></button>`;
+  const seletorParc=pay=="credito"?`<label class="fld parcs"><span>Em quantas vezes você quer parcelar?</span><select id="parcsel" onchange="setParc(+this.value)">${Array.from({length:PARC},(_,n)=>n+1).map(n=>`<option value="${n}"${n==parcelas?" selected":""}>${textoParc(total,n)}</option>`).join("")}</select></label>`:"";
   $("tot").innerHTML=`<div class="ent">Total</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:total)}</div>
     <div class="pay" role="radiogroup" aria-label="Forma de pagamento">
       ${op("pix","Pix",PIXD?`${R(tp)} no Pix`:"Pague na hora, sem taxa",PIXD?`<em>-${PIXD}%</em>`:"")}
       ${op("credito","Cartão de crédito",`até ${PARC}x de ${R(total/PARC)} sem juros`)}
       ${op("debito","Cartão de débito","à vista")}
     </div>
+    ${seletorParc}
     <div class="aviso link">💳 <b>Como funciona o pagamento:</b>
-      <ol><li>Escolha a forma de pagamento acima.</li><li>Preencha seus dados e <b>peça o LINK DE PAGAMENTO</b>.</li><li>Nós enviamos o <b>link de pagamento</b> para você pelo WhatsApp e você paga com segurança.</li></ol></div>
+      <ol><li>Escolha a forma de pagamento acima${pay=="credito"?" e o número de parcelas":""}.</li><li>Preencha seus dados e <b>peça o LINK DE PAGAMENTO</b>.</li><li>Nós enviamos o <b>link de pagamento</b> para você pelo WhatsApp e você paga com segurança.</li></ol></div>
     <div class="ent">🚚 Entrega em Fortaleza para pedidos a partir de ${R(MIN_ENTREGA)}, em até 24h após a confirmação da compra. Abaixo disso, retirada na loja.</div>
     <button type="button" class="btn" style="display:block;width:100%;margin:10px 0" onclick="irForm()">Continuar e pedir o link de pagamento</button>
     ${askBtn("Olá! Estou montando um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
