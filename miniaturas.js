@@ -4,6 +4,10 @@ const MINIS = {
  "soft-d20": [
   "soft-d20-1.webp",
   "soft-d20-2.webp"
+ ], 
+ "airtech-100": [
+  "airtech-100-1.webp",
+  "airtech-100-2.webp"
  ],
  "airtech-100": [
   "airtech-100-1.webp",
