@@ -54,6 +54,10 @@ const PRODUTOS = [
     ["Casal 138×188", 2418.15, "1041691790", 1],
     ["Queen 158×198", null, "FREEDOM-158", null]
   ] },
+  { nome: "Versalhes", cat: "colchao", img: "versalhes",
+    desc: "Espuma viscoelástica: se molda ao corpo e alivia pontos de pressão. Partículas de gel: ajudam a dissipar o calor e dão sensação de frescor. Pillow top.",
+    dif: ["tecido com partículas de gel e fio de toque frio", "Tecnologia de microporos"],
+    tamanhos: [["Solteiro 88×188", 755.58, "CON-005", 0],["Casal 158×198", 2951.76, "CON-500", 1], ["Casal 138×188", 2761.25, "2026100117090502", 1]] },
   { nome: "Airtech 1.0.0", cat: "colchao", img: "airtech-100",
     desc: "Revestimento em malha com tecnologia de microporos e camada de espuma D33. Conforto e boa respirabilidade.",
     dif: ["Revestimento em malha", "Bordado em matelassê", "Tecnologia de microporos", "Lâmina de EPS"],
