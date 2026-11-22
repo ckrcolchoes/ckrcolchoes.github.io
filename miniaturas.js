@@ -41,7 +41,8 @@ const MINIS = {
   "base-sommier-z1.webp",
   "base-sommier-z2.webp"
  ],
- "base-sommier-1": [
+  "base-sommier-1": [
+  "base-sommier-1-mini-1.webp",
   "base-sommier-1-mini-2.webp",
   "base-sommier-1-mini-3.webp"
  ],
