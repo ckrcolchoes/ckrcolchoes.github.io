@@ -615,7 +615,7 @@ function desenhar(){
       <ol><li>Escolha a forma de pagamento acima${pay=="credito"?" e o número de parcelas":""}.</li><li>Preencha seus dados e <b>peça o LINK DE PAGAMENTO</b>.</li><li>Nós enviamos o <b>link de pagamento</b> para você pelo WhatsApp e você paga com segurança.</li></ol></div>
     <div class="ent">🚚 Entrega em Fortaleza para pedidos a partir de ${R(MIN_ENTREGA)}, em até 24h após a confirmação da compra. Abaixo disso, retirada na loja.</div>
     <button type="button" class="btn" style="display:block;width:100%;margin:10px 0" onclick="irForm()">Continuar e pedir o link de pagamento</button>
-    ${askBtn("Olá! Estou montando um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
+    ${askBtn("Olá! Estou montando um pedido no Site da CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
 /* ---------- Oferta em destaque (popup ao abrir + mini no canto) ---------- */
 (function(){
   const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true,miniInicio:8,miniDuracao:12,miniIntervalo:30,miniVezes:4},typeof OFERTA!=="undefined"?OFERTA:{});
