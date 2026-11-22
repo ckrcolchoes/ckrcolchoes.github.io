@@ -241,6 +241,15 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .radios label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .resumo{background:var(--card);border:1px solid #8883;border-radius:14px;padding:12px 14px;font-size:14px}
 .resumo b{font-size:18px}
+/* LINK DE PAGAMENTO */
+.aviso.link{border-color:var(--gold);background:#f5b94226;margin:10px 0}
+.aviso.link b{color:var(--ink)}
+.aviso.link ol{padding-left:18px;margin-top:6px}
+.fim{text-align:center;display:grid;gap:12px;padding:6px 0 20px}
+.fim .ico{font-size:46px}
+.fim h4{font-family:Georgia,serif;font-size:24px}
+.fim p{font-size:14px;color:var(--muted);line-height:1.5}
+.fim .aviso{text-align:left}
 </style>
 </head>
 <body>
@@ -272,7 +281,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 
 <section id="catalogo">
   <h2>Catálogo</h2>
-  <p class="sub">Clique no produto para ver os detalhes, escolher o tamanho e pedir pelo WhatsApp. Estoque sujeito a alteração.</p>
+  <p class="sub">Clique no produto para ver os detalhes, escolher o tamanho e adicionar ao carrinho. Para finalizar, é só pedir o <b>link de pagamento</b>: enviamos para você pelo WhatsApp. Estoque sujeito a alteração.</p>
   <div class="barra">
     <div class="filtros" id="filtros"></div>
     <label class="busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="busca" type="search" placeholder="Buscar produto" aria-label="Buscar produto" autocomplete="off"></label>
@@ -410,7 +419,8 @@ $("ov").onclick=e=>{if(e.target.id=="ov")fechar()};
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").classList.remove("on")}});
 
 /* ---------- Carrinho ---------- */
-let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário
+let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário | 3 = pedido enviado
+let ultimaMsg="";                // última mensagem enviada ao WhatsApp (só na memória)
 const MIN_ENTREGA=1000;          // entrega só a partir deste valor
 /* Faixas de CEP atendidas (5 primeiros dígitos) */
 const FAIXAS_CEP=[[60010,60060],[60110,60191],[60310,60360],[60410,60455],[60510,60546],[60710,60766],[60810,60878]];
@@ -424,9 +434,11 @@ const linhasPedido=()=>cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];retu
 function setPay(f){pay=f;desenhar();}
 function irForm(){etapa=2;desenhar();$("tot").scrollTop=0;}
 function voltar(){etapa=0;desenhar();}
+function concluir(){cart=[];F=F0();ultimaMsg="";etapa=0;pay="pix";desenhar();$("dr").classList.remove("on");}
 const resumoPag=t=>pay=="pix"?`Pix: ${R(pixv(t))}${PIXD?` (-${PIXD}% no Pix)`:""}`
   :pay=="credito"?`Cartão de crédito: ${R(t)} em até ${PARC}x de ${R(t/PARC)} sem juros`
   :`Cartão de débito: ${R(t)} à vista`;
+const nomePag=()=>pay=="pix"?"Pix":pay=="credito"?"Cartão de crédito":"Cartão de débito";
 function cpfOk(c){c=soNum(c);if(c.length!=11||/^(\d)\1+$/.test(c))return false;
   for(let t=9;t<11;t++){let s=0;for(let i=0;i<t;i++)s+=c[i]*(t+1-i);if((s*10)%11%10!=c[t])return false}return true}
 /* máscaras */
@@ -474,6 +486,7 @@ const endH=s=>`<label class="fld"><span>CEP</span><input id="f_cep${s}" inputmod
   <div class="f2"><label class="fld"><span>Cidade</span><input id="f_cid${s}" readonly value="${esc(F["cid"+s])}"></label>
   <label class="fld"><span>UF</span><input id="f_uf${s}" readonly value="${esc(F["uf"+s])}"></label></div>`;
 function formHtml(){return `<div class="fform" id="fform">
+  <div class="aviso link">🔗 <b>Você está pedindo o LINK DE PAGAMENTO.</b><br>Preencha os dados abaixo e envie pelo WhatsApp. Nós vamos te enviar o <b>link de pagamento</b> ali mesmo, para você pagar com <b>${nomePag()}</b>.</div>
   <h4>Seus dados</h4>
   <label class="fld"><span>Nome completo</span><input id="f_nome" autocomplete="name" value="${esc(F.nome)}" oninput="F.nome=this.value"></label>
   <label class="fld"><span>CPF</span><input id="f_cpf" inputmode="numeric" placeholder="000.000.000-00" value="${esc(F.cpf)}" oninput="mk(this,'cpf','cpf')"></label>
@@ -486,9 +499,9 @@ function formHtml(){return `<div class="fform" id="fform">
   <div id="b2" class="fform" style="display:none"><h4>Endereço de entrega</h4>${endH("2")}</div>
   <div class="aviso" id="avEnt"></div>
   <div class="resumo" id="ftot"></div>
-  <button type="button" class="btn" style="display:block;width:100%" onclick="enviar()">Enviar pedido pelo WhatsApp</button>
-  <small class="cepst">Seus dados não ficam salvos no site: vão somente na mensagem do WhatsApp, para gerarmos o seu link de pagamento.</small>
-  ${askBtn("Olá! Estou preenchendo meus dados para finalizar um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido(),"❓ Tirar uma dúvida antes de enviar")}
+  <button type="button" class="btn" style="display:block;width:100%" onclick="enviar()">🔗 Pedir LINK DE PAGAMENTO pelo WhatsApp</button>
+  <small class="cepst">Seus dados não ficam salvos no site: vão somente na mensagem do WhatsApp, para gerarmos o seu link de pagamento. Você só paga depois de receber o link.</small>
+  ${askBtn("Olá! Estou preenchendo meus dados para pedir o link de pagamento na CKR Colchões e tenho uma dúvida:\n"+linhasPedido(),"❓ Tirar uma dúvida antes de enviar")}
   <button type="button" class="lnk" onclick="voltar()">← Voltar ao carrinho</button></div>`}
 function enviar(){
   const err=(id,m)=>{aviso(m);const e=$(id);if(e){e.focus();e.scrollIntoView({block:"center"})}};
@@ -506,12 +519,22 @@ function enviar(){
   const endTxt=s=>`${F["log"+s]}, ${F["num"+s]}${F["comp"+s]?" - "+F["comp"+s]:""} - ${F["bairro"+s]} - ${F["cid"+s]}/${F["uf"+s]} - CEP ${F["cep"+s]}`;
   const entrega=st.ok?`🚚 ENTREGA em: ${endTxt(F.mesmo=="sim"?"":"2")}\nPrazo: até 24h após a confirmação da compra.`
     :`🏬 RETIRADA NA LOJA (não há entrega neste caso: ${st.m.join("; ")}).`;
-  const msg=`Olá! Quero fechar este pedido:\n${linhas}\nTotal: ${R(total)}\nForma de pagamento: ${resumoPag(total)}\nPor favor, me enviem o link de pagamento.\n\n`
+  ultimaMsg=`🔗 PEDIDO DE LINK DE PAGAMENTO\n\nOlá! Quero fechar este pedido:\n${linhas}\nTotal: ${R(total)}\nForma de pagamento escolhida: ${resumoPag(total)}\n\n➡️ Por favor, me enviem o LINK DE PAGAMENTO por aqui.\n\n`
    +`👤 DADOS DO CLIENTE\nNome: ${F.nome.trim()}\nCPF: ${F.cpf}\nE-mail: ${F.email.trim()}\nTelefone: ${F.tel}\nEndereço: ${endTxt("")}\n\n${entrega}`;
-  window.open(wa(msg),"_blank","noopener");}
+  window.open(wa(ultimaMsg),"_blank","noopener");
+  etapa=3;desenhar();$("tot").scrollTop=0;}
+function fimHtml(){const st=statusEntrega(totalPedido());
+  return `<div class="fim"><div class="ico">📲</div><h4>Pedido enviado!</h4>
+  <p>Agora é só aguardar: vamos te enviar o <b>LINK DE PAGAMENTO</b> pelo WhatsApp para você pagar com <b>${nomePag()}</b>.</p>
+  <div class="aviso link"><b>Importante:</b><ol><li>Seu pedido só é confirmado <b>depois do pagamento</b> pelo link.</li><li>${st.ok?"A entrega é feita <b>em até 24h após a confirmação da compra</b>.":"Neste pedido a <b>retirada é na loja</b> ("+LOJA.endereco+")."}</li></ol></div>
+  <a class="btn" target="_blank" rel="noopener" href="${wa(ultimaMsg)}">💬 Abrir o WhatsApp de novo</a>
+  <small class="cepst">Se o WhatsApp não abriu, toque no botão acima. A mensagem já está pronta.</small>
+  ${askBtn("Olá! Acabei de enviar um pedido pelo site da CKR Colchões e tenho uma dúvida.","❓ Tirar uma dúvida")}
+  <button type="button" class="lnk" onclick="concluir()">Concluir e fechar</button></div>`}
 function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k==k),atual=f?f.q:0;
   if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
   if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);$("dr").classList.add("on");return;}
+  if(etapa>=2)etapa=0;
   f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
 function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
   if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);return;}
@@ -569,9 +592,10 @@ function desenhar(){
     return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1],p)*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
   $("itens").innerHTML+=sugestoes();
   if(!cart.length)etapa=0;
-  $("dr").classList.toggle("form",etapa==2);
+  $("dr").classList.toggle("form",etapa>=2);
   if(!cart.length){$("tot").innerHTML=askBtn("Olá! Tenho uma dúvida sobre os produtos da CKR Colchões.","❓ Tirar uma dúvida no WhatsApp");return;}
   const total=totalPedido(),tp=pixv(total);
+  if(etapa==3){$("tot").innerHTML=fimHtml();return;}
   if(etapa==2){if(!$("fform"))$("tot").innerHTML=formHtml();atualizaEntrega();return;}
   const op=(k,tit,sub,extra="")=>`<button type="button" role="radio" aria-checked="${pay==k}" class="po ${pay==k?"on":""}" onclick="setPay('${k}')"><i></i><span><b>${tit}${extra}</b><small>${sub}</small></span></button>`;
   $("tot").innerHTML=`<div class="ent">Total</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:total)}</div>
@@ -580,8 +604,10 @@ function desenhar(){
       ${op("credito","Cartão de crédito",`até ${PARC}x de ${R(total/PARC)} sem juros`)}
       ${op("debito","Cartão de débito","à vista")}
     </div>
+    <div class="aviso link">💳 <b>Como funciona o pagamento:</b>
+      <ol><li>Escolha a forma de pagamento acima.</li><li>Preencha seus dados e <b>peça o LINK DE PAGAMENTO</b>.</li><li>Nós enviamos o <b>link de pagamento</b> para você pelo WhatsApp e você paga com segurança.</li></ol></div>
     <div class="ent">🚚 Entrega em Fortaleza para pedidos a partir de ${R(MIN_ENTREGA)}, em até 24h após a confirmação da compra. Abaixo disso, retirada na loja.</div>
-    <button type="button" class="btn" style="display:block;width:100%;margin:10px 0" onclick="irForm()">Continuar</button>
+    <button type="button" class="btn" style="display:block;width:100%;margin:10px 0" onclick="irForm()">Continuar e pedir o link de pagamento</button>
     ${askBtn("Olá! Estou montando um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
 /* ---------- Oferta em destaque (popup ao abrir + mini no canto) ---------- */
 (function(){
