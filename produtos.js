@@ -45,7 +45,8 @@ const PRODUTOS = [
   { nome: "Soft D-20", cat: "colchao", img: "soft-d20", promo: 249.99,
     desc: "Colchão de espuma D20, leve e econômico para o dia a dia.",
     dif: ["Espuma D20", "Opção econômica"],
-   { nome: "Freedom", cat: "colchao", img: "freedom",
+    tamanhos: [["Solteiro 88×188", 399.00, "REF-SOFT-D20", 2]] },
+  { nome: "Freedom", cat: "colchao", img: "freedom",
   desc: "Molas superpocket ensacadas, pillow top em espuma viscoelástica e sistema No Turn: a combinação de qualidade, beleza e conforto.",
   dif: ["Molas superpocket ensacadas individualmente", "Pillow top em espuma viscoelástica", "Camada de sustentação em espuma D33", "Sistema No Turn: não precisa virar", "Tecido de malha super soft"],
   tamanhos: [
@@ -53,7 +54,6 @@ const PRODUTOS = [
     ["Casal 138×188", 2418.15, "1041691790", 1],
     ["Queen 158×198", null, "FREEDOM-158", null]
   ] },
-    tamanhos: [["Solteiro 88×188", 399.00, "REF-SOFT-D20", 2]] },
   { nome: "Airtech 1.0.0", cat: "colchao", img: "airtech-100",
     desc: "Revestimento em malha com tecnologia de microporos e camada de espuma D33. Conforto e boa respirabilidade.",
     dif: ["Revestimento em malha", "Bordado em matelassê", "Tecnologia de microporos", "Lâmina de EPS"],
