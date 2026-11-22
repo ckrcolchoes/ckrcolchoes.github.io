@@ -166,15 +166,6 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .po.on i{border-color:var(--blue)}.po.on i::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--blue)}
 .po b{display:block;font-size:15px}.po small{display:block;color:var(--muted);font-size:12px;font-weight:400}
 .po em{font-style:normal;background:var(--gold);color:#1a1200;font-weight:800;font-size:12px;padding:2px 8px;border-radius:8px;margin-left:6px}
-.pixbox{background:var(--card);border:1px solid #8883;border-radius:16px;padding:14px;margin:12px 0;display:grid;gap:8px}
-.pixbox small{color:var(--muted);font-size:12px}
-.pixk{display:flex;gap:8px;align-items:center;justify-content:space-between}
-.pixk b{font-size:17px}
-.cp{border:0;border-radius:10px;background:var(--navy);color:#fff;padding:8px 14px;font-weight:700;cursor:pointer}
-.pixbox textarea{width:100%;font:12px ui-monospace,monospace;border:1px solid #8885;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);resize:none}
-.pixbox ol{padding-left:18px;font-size:13px;color:var(--muted);line-height:1.5}
-.qr{width:210px;max-width:100%;margin:2px auto 0;background:#fff;border-radius:12px;padding:6px;box-shadow:0 2px 10px #0003}.qr svg{display:block;width:100%;height:auto}
-.cap{text-align:center}
 .sug{margin:18px 0 6px}.sug h4{font-family:Georgia,serif;font-size:19px}.sug>small{color:var(--muted);display:block;margin:2px 0 6px}
 .sg{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed #8884}
 .sg img{width:56px;height:44px;object-fit:contain;background:#fff;border-radius:8px;mix-blend-mode:multiply}
@@ -221,13 +212,42 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .ofmini b{font-size:14px}
 .ofmini em{font-style:normal;font-weight:800;color:var(--gold);font-size:17px}
 .ofmini .mx{position:absolute;top:-10px;right:-10px;width:24px;height:24px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 8px #0006}
+/* DÚVIDAS PELO WHATSAPP */
+.btn.ask{background:transparent;color:var(--ink);border:2px solid var(--wa);padding:9px 18px;font-size:14px}
+.btn.ask:hover{background:#1faa5922}
+.loja a.btn.ask{color:#fff}
+.dvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.dv{background:var(--card);border-radius:18px;padding:22px;box-shadow:0 2px 12px #0002;display:flex;flex-direction:column;gap:8px}
+.dv .ic{font-size:30px}
+.dv h3{font-size:19px}
+.dv p{color:var(--muted);font-size:14px;line-height:1.5;flex:1}
+.dv .btn{margin-top:8px}
+/* FORMULÁRIO DE FECHAMENTO */
+.dr.form .itens{display:none}
+.dr.form .tot{max-height:none;flex:1;overflow-y:auto}
+.fform{display:grid;gap:10px;padding-bottom:20px}
+.fform h4{font-family:Georgia,serif;font-size:19px;margin-top:8px}
+.fld{display:grid;gap:4px}
+.fld span{font-size:13px;color:var(--muted);font-weight:600}
+.fld input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid #8886;background:var(--card);color:var(--ink);font-size:15px;outline:none}
+.fld input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1e4fa333}
+.fld input[readonly]{opacity:.75}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cepst{color:var(--muted);font-size:12px;min-height:14px}
+.aviso{border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.5;background:var(--card);border:1px solid #8883}
+.aviso.ok{border-color:var(--wa);background:#1faa5922}
+.aviso.no{border-color:var(--red);background:#e5363b1f}
+.radios{display:flex;gap:18px;font-size:15px}
+.radios label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.resumo{background:var(--card);border:1px solid #8883;border-radius:14px;padding:12px 14px;font-size:14px}
+.resumo b{font-size:18px}
 </style>
 </head>
 <body>
-<div class="top"><span>🚚 Entrega grátis em Fortaleza · Parcele em até <span id="parc">12</span>x sem juros</span><span id="tel"></span></div>
+<div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">12</span>x sem juros</span><span id="tel"></span></div>
 <header>
   <div class="logo"><img src="img/logo-ckr-3d.webp" alt="Logo CKR Colchões" class="logo-img"><span>CKR Colchões<small>FORTALEZA · CE</small></span></div>
-  <nav><a href="#catalogo">Catálogo</a><a href="#loja">Nossa loja</a></nav>
+  <nav><a href="#catalogo">Catálogo</a><a href="#duvidas">Dúvidas</a><a href="#loja">Nossa loja</a></nav>
   <div class="hr">
     <button class="bf" id="cartbtn" aria-label="Abrir carrinho — Black Friday CKR">
       <span class="cartbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.5L21.5 8H6"/></svg><b id="cnt">0</b></span>
@@ -260,6 +280,16 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
   <div class="grid" id="grid"></div>
 </section>
 
+<section id="duvidas">
+  <h2>Ficou com dúvida?</h2>
+  <p class="sub">Pergunte pelo WhatsApp a qualquer momento: antes, durante ou depois da sua compra.</p>
+  <div class="dvs">
+    <div class="dv"><span class="ic">🤔</span><h3>Antes de comprar</h3><p>Quer saber qual colchão combina com você, medidas, firmeza, estoque ou formas de pagamento? Pergunte para um consultor.</p><a class="btn" id="wa-d1" target="_blank" rel="noopener">💬 Tirar uma dúvida</a></div>
+    <div class="dv"><span class="ic">🛒</span><h3>Durante a compra</h3><p>Está montando o pedido e travou em alguma etapa (pagamento, endereço, entrega)? A gente ajuda por aqui.</p><a class="btn" id="wa-d2" target="_blank" rel="noopener">💬 Preciso de ajuda</a></div>
+    <div class="dv"><span class="ic">📦</span><h3>Depois de comprar</h3><p>Já fez o pedido e quer saber do pagamento, da entrega ou da nota fiscal? Fale com a gente.</p><a class="btn" id="wa-d3" target="_blank" rel="noopener">💬 Já comprei, tenho uma dúvida</a></div>
+  </div>
+</section>
+
 <div class="loja" id="loja"><div class="in">
   <div>
     <h2 style="font-family:Georgia,serif;font-size:32px">Visite a CKR Colchões</h2>
@@ -274,7 +304,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
   <p>CKR Colchões · Av. Gomes de Matos, 148 – Montese, Fortaleza - CE · (85) 98743-1390</p>
   <p>© 2026 CKR Colchões. Preços sujeitos a alteração. Consulte disponibilidade.</p>
 </footer>
-<a class="btn fab" id="wa-fab" target="_blank" rel="noopener">WhatsApp</a>
+<a class="btn fab" id="wa-fab" target="_blank" rel="noopener">💬 Dúvidas? WhatsApp</a>
 
 <div class="ov" id="ov"><div class="det" id="det"></div></div>
 <aside class="dr" id="dr">
@@ -301,86 +331,11 @@ const fotos=p=>[foto(p),...((typeof MINIS!=="undefined"&&MINIS[p.img])||[]).map(
 const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<button type="button" class="${j==0?"on":""}" data-f="${f}" aria-label="Foto ${j+1} de ${p.nome}"><img src="${f}" alt="" loading="lazy"></button>`).join("")}</div>`;
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
 const off=p=>descP(p)?`<span class="off">-${descP(p)}%</span>`:"";
-/* Pix: lê as configurações do produtos.js (com valores padrão se faltarem) */
-const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº de parcelas sem juros no cartão
+/* Pagamento: lê as configurações do produtos.js (com valores padrão se faltarem) */
+const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº de parcelas sem juros no cartão de crédito
 $("parc").textContent=PARC;
 const PIXD=(typeof DESCONTO_PIX!=="undefined"&&DESCONTO_PIX>0)?DESCONTO_PIX:0;   // 0 = sem desconto no Pix
 const pixv=v=>Math.round(v*(100-PIXD))/100;
-const PIXK=(LOJA.pix||"24648670000187").replace(/\D/g,"");
-const PIXNOME=norm(LOJA.pixNome||"CKR COLCHOES").toUpperCase().slice(0,25);
-const PIXCID=norm(LOJA.pixCidade||"FORTALEZA").toUpperCase().slice(0,15);
-const fmtK=k=>k.length==14?k.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5"):k;
-const tlv=(id,v)=>id+String(v.length).padStart(2,"0")+v;
-function crc16(t){let c=0xFFFF;for(let i=0;i<t.length;i++){c^=t.charCodeAt(i)<<8;for(let j=0;j<8;j++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF}return c.toString(16).toUpperCase().padStart(4,"0")}
-function pixCode(v){const p=tlv("00","01")+tlv("01","11")+tlv("26",tlv("00","br.gov.bcb.pix")+tlv("01",PIXK))+tlv("52","0000")+tlv("53","986")+tlv("54",v.toFixed(2))+tlv("58","BR")+tlv("59",PIXNOME)+tlv("60",PIXCID)+tlv("62",tlv("05","***"))+"6304";return p+crc16(p);}
-/* ---------- QR Code (gerador próprio, nível de correção M, versões 1–10) ---------- */
-function qrMatrix(text){
-  const data=[...new TextEncoder().encode(text)];
-  const ECCB=[0,10,16,26,18,24,16,18,22,22,26],NBLK=[0,1,1,1,2,2,4,4,4,5,5];
-  const nAlign=v=>Math.floor(v/7)+2;
-  const raw=v=>Math.floor(((16*v+128)*v+64-(v>=2?(25*nAlign(v)-10)*nAlign(v)-55:0)-(v>=7?36:0))/8);
-  let ver=1;for(;ver<=10;ver++){const cap=(raw(ver)-ECCB[ver]*NBLK[ver])*8;if(4+(ver<=9?8:16)+data.length*8<=cap)break;}
-  if(ver>10)throw new Error("QR: texto muito longo");
-  const size=ver*4+17,dataCw=raw(ver)-ECCB[ver]*NBLK[ver];
-  // bits dos dados
-  const bits=[];const put=(v,n)=>{for(let i=n-1;i>=0;i--)bits.push((v>>>i)&1)};
-  put(4,4);put(data.length,ver<=9?8:16);data.forEach(b=>put(b,8));
-  put(0,Math.min(4,dataCw*8-bits.length));while(bits.length%8)bits.push(0);
-  const cw=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=b<<1|bits[i+j];cw.push(b)}
-  for(let p=0xEC;cw.length<dataCw;p^=0xEC^0x11)cw.push(p);
-  // Reed-Solomon
-  const gmul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
-  const gen=(d=>{const r=new Array(d).fill(0);r[d-1]=1;let root=1;for(let i=0;i<d;i++){for(let j=0;j<d;j++){r[j]=gmul(r[j],root);if(j+1<d)r[j]^=r[j+1]}root=gmul(root,2)}return r})(ECCB[ver]);
-  const rem=d=>{const r=new Array(gen.length).fill(0);for(const b of d){const f=b^r.shift();r.push(0);gen.forEach((c,i)=>r[i]^=gmul(c,f))}return r};
-  const nb=NBLK[ver],tot=raw(ver),nShort=nb-tot%nb,shortLen=Math.floor(tot/nb),blocks=[];
-  for(let i=0,k=0;i<nb;i++){const d=cw.slice(k,k+shortLen-ECCB[ver]+(i<nShort?0:1));k+=d.length;const e=rem(d);if(i<nShort)d.push(0);blocks.push(d.concat(e))}
-  const all=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!=shortLen-ECCB[ver]||j>=nShort)all.push(b[i])});
-  // matriz
-  const mk=()=>Array.from({length:size},()=>new Array(size).fill(false)),fn=mk();let M=mk();
-  const setF=(x,y,d)=>{if(x>=0&&x<size&&y>=0&&y<size){M[y][x]=d;fn[y][x]=true}};
-  for(let i=0;i<size;i++){setF(6,i,i%2==0);setF(i,6,i%2==0)}
-  const finder=(x,y)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy));setF(x+dx,y+dy,d!=2&&d!=4)}};
-  finder(3,3);finder(size-4,3);finder(3,size-4);
-  const pos=[6];if(ver>1){const n=nAlign(ver),step=Math.ceil((ver*4+4)/(n*2-2))*2;for(let p=size-7,c=1;c<n;p-=step,c++)pos.splice(1,0,p)}
-  pos.forEach((a,i)=>pos.forEach((b,j)=>{if((i==0&&j==0)||(i==0&&j==pos.length-1)||(i==pos.length-1&&j==0))return;
-    for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)setF(a+dx,b+dy,Math.max(Math.abs(dx),Math.abs(dy))!=1)}));
-  const bit=(v,i)=>((v>>>i)&1)!=0;
-  const fmt=(m,mask)=>{const d=0<<3|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=((d<<10)|r)^0x5412;
-    for(let i=0;i<=5;i++)m[i][8]=bit(b,i);m[7][8]=bit(b,6);m[8][8]=bit(b,7);m[8][7]=bit(b,8);for(let i=9;i<15;i++)m[8][14-i]=bit(b,i);
-    for(let i=0;i<8;i++)m[8][size-1-i]=bit(b,i);for(let i=8;i<15;i++)m[size-15+i][8]=bit(b,i);m[size-8][8]=true};
-  // (m[y][x]) — acima: m[i][8] significa linha i, coluna 8
-  for(let i=0;i<=5;i++)fn[i][8]=true;fn[7][8]=fn[8][8]=fn[8][7]=true;for(let i=9;i<15;i++)fn[8][14-i]=true;
-  for(let i=0;i<8;i++)fn[8][size-1-i]=true;for(let i=8;i<15;i++)fn[size-15+i][8]=true;fn[size-8][8]=true;
-  if(ver>=7){let r=ver;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=(ver<<12)|r;
-    for(let i=0;i<18;i++){const c=bit(b,i),a=size-11+i%3,d=Math.floor(i/3);setF(a,d,c);setF(d,a,c)}}
-  // dados em zigue-zague
-  for(let i=0,right=size-1;right>=1;right-=2){if(right==6)right=5;
-    for(let v=0;v<size;v++)for(let j=0;j<2;j++){const x=right-j,y=((right+1)&2)==0?size-1-v:v;
-      if(!fn[y][x]&&i<all.length*8){M[y][x]=bit(all[i>>>3],7-(i&7));i++}}}
-  // máscara (escolhe a de menor penalidade)
-  const cond=[(x,y)=>(x+y)%2==0,(x,y)=>y%2==0,(x,y)=>x%3==0,(x,y)=>(x+y)%3==0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2==0,(x,y)=>x*y%2+x*y%3==0,(x,y)=>(x*y%2+x*y%3)%2==0,(x,y)=>((x+y)%2+x*y%3)%2==0];
-  const P1=[1,0,1,1,1,0,1,0,0,0,0],P2=[0,0,0,0,1,0,1,1,1,0,1];
-  const pen=m=>{let r=0;
-    for(let t=0;t<2;t++){for(let a=0;a<size;a++){let run=1;const g=b=>t?m[b][a]:m[a][b];
-      for(let b=1;b<=size;b++){if(b<size&&g(b)==g(b-1))run++;else{if(run>=5)r+=run-2;run=1}}
-      for(let b=0;b+11<=size;b++){let o1=true,o2=true;for(let k=0;k<11;k++){const v=g(b+k)?1:0;if(v!=P1[k])o1=false;if(v!=P2[k])o2=false}if(o1)r+=40;if(o2)r+=40}}}
-    let dark=0;for(let y=0;y<size;y++)for(let x=0;x<size;x++){if(m[y][x])dark++;if(x<size-1&&y<size-1&&m[y][x]==m[y][x+1]&&m[y][x]==m[y+1][x]&&m[y][x]==m[y+1][x+1])r+=3}
-    r+=(Math.ceil(Math.abs(dark*20-size*size*10)/(size*size))-1)*10;return r};
-  let best=null,bp=1e9;
-  for(let mask=0;mask<8;mask++){const m=M.map(r=>r.slice());
-    for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!fn[y][x]&&cond[mask](x,y))m[y][x]=!m[y][x];
-    fmt(m,mask);const p=pen(m);if(p<bp){bp=p;best=m}}
-  return best;
-}
-function qrSvg(text){const m=qrMatrix(text),n=m.length,b=4;let d="";
-  for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(m[y][x])d+=`M${x+b},${y+b}h1v1h-1z`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*b} ${n+2*b}" shape-rendering="crispEdges" role="img" aria-label="QR Code do Pix"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`}
-
-function copiar(id,btn){const el=$(id),txt=el.dataset.c||el.value||el.textContent,ok=()=>{const o=btn.textContent;btn.textContent="Copiado ✓";setTimeout(()=>btn.textContent=o,1800)};
-  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(txt).then(ok,()=>aviso("Não consegui copiar. Selecione e copie manualmente."));
-  else{try{el.select&&el.select();document.execCommand("copy");ok()}catch(e){aviso("Não consegui copiar. Selecione e copie manualmente.")}}}
-/* Dados pedidos ao cliente no WhatsApp para emitir a nota fiscal */
-const DADOS_NOTA="\n\n📄 DADOS PARA A NOTA FISCAL (preencha):\nNome completo: \nCPF: \nCEP com o número da casa e endereço completo: \n2º telefone (opcional): ";
 /* Estoque: 0 = esgotado | null = não informado (sem limite) */
 const esgT=t=>t[3]!=null&&t[3]<=0;
 const esgP=p=>p.tamanhos.every(esgT);
@@ -390,6 +345,11 @@ $("tel").textContent="📞 "+LOJA.telefone;$("tel2").textContent="📞 "+LOJA.te
 $("mapa").src="https://www.google.com/maps?q="+encodeURIComponent(LOJA.endereco)+"&output=embed";
 $("pct").textContent=DESCONTO+"%";
 ["wa-top","wa-fab","wa-loja"].forEach(i=>$(i).href=wa("Olá! Vim pelo site da CKR Colchões."));
+/* Dúvidas pelo WhatsApp: antes, durante e depois da compra */
+$("wa-d1").href=wa("Olá! Estou vendo o site da CKR Colchões e tenho uma dúvida antes de comprar.");
+$("wa-d2").href=wa("Olá! Estou fazendo um pedido pelo site da CKR Colchões e preciso de ajuda.");
+$("wa-d3").href=wa("Olá! Já fiz um pedido na CKR Colchões e tenho uma dúvida sobre ele.");
+const askBtn=(msg,txt)=>`<a class="btn ask" style="display:block" target="_blank" rel="noopener" href="${wa(msg)}">${txt}</a>`;
 
 /* ---------- Banner (3 em 3) ---------- */
 const BANNER=PRODUTOS.map((p,i)=>i).filter(i=>menor(PRODUTOS[i])&&!esgP(PRODUTOS[i]));
@@ -438,7 +398,8 @@ function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1
     ${esgT(t)?`<div class="esgmsg">Esgotado no momento. Chame a gente e avisamos quando chegar.</div>`:""}
     <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn dark" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
     <a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! Quero o ${p.nome} (${t[0]})${pr!=null?" por "+R(pr):""}. Ref. ${t[2]}`)}">${pr!=null?"Comprar no WhatsApp":"Consultar preço no WhatsApp"}</a>`}</div>
-    <div class="ent">🚚 Entrega grátis em Fortaleza</div></div>
+    ${askBtn(`Olá! Tenho uma dúvida sobre o ${p.nome} (${t[0]}). Ref. ${t[2]}`,"❓ Tirar dúvida sobre este produto")}
+    <div class="ent" style="margin-top:12px">🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000</div></div>
   <div class="specs"><div><small>Medida</small><b>${t[0]}</b></div><div><small>Referência</small><b>${t[2]}</b></div><div><small>Disponibilidade</small><b>${disp}</b></div></div></div></div>
   <div class="sob"><div><h3>Sobre o produto</h3><p>${p.desc}</p></div>
   <div><h3>Diferenciais</h3><div class="difs">${(p.dif||[]).map(d=>`<div><i>✓</i>${d}</div>`).join("")}</div></div></div>`;
@@ -449,10 +410,105 @@ $("ov").onclick=e=>{if(e.target.id=="ov")fechar()};
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").classList.remove("on")}});
 
 /* ---------- Carrinho ---------- */
-let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 1 = tela do Pix
+let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário
+const MIN_ENTREGA=1000;          // entrega só a partir deste valor
+/* Faixas de CEP atendidas (5 primeiros dígitos) */
+const FAIXAS_CEP=[[60010,60060],[60110,60191],[60310,60360],[60410,60455],[60510,60546],[60710,60766],[60810,60878]];
+const cepOk=c=>{const n=+c.slice(0,5);return c.length==8&&FAIXAS_CEP.some(([a,b])=>n>=a&&n<=b)};
+const F0=()=>({nome:"",cpf:"",email:"",tel:"",cep:"",log:"",bairro:"",cid:"",uf:"",num:"",comp:"",mesmo:"sim",cep2:"",log2:"",bairro2:"",cid2:"",uf2:"",num2:"",comp2:""});
+let F=F0();                      // dados do cliente: só na memória, nunca gravados
+const soNum=s=>(s||"").replace(/\D/g,"");
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const totalPedido=()=>cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1],PRODUTOS[c.i])*c.q,0);
+const linhasPedido=()=>cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1],p)*c.q)}`}).join("\n");
 function setPay(f){pay=f;desenhar();}
-function irPix(){etapa=1;desenhar();$("tot").scrollTop=0;}
+function irForm(){etapa=2;desenhar();$("tot").scrollTop=0;}
 function voltar(){etapa=0;desenhar();}
+const resumoPag=t=>pay=="pix"?`Pix: ${R(pixv(t))}${PIXD?` (-${PIXD}% no Pix)`:""}`
+  :pay=="credito"?`Cartão de crédito: ${R(t)} em até ${PARC}x de ${R(t/PARC)} sem juros`
+  :`Cartão de débito: ${R(t)} à vista`;
+function cpfOk(c){c=soNum(c);if(c.length!=11||/^(\d)\1+$/.test(c))return false;
+  for(let t=9;t<11;t++){let s=0;for(let i=0;i<t;i++)s+=c[i]*(t+1-i);if((s*10)%11%10!=c[t])return false}return true}
+/* máscaras */
+function mk(el,k,t){let d=soNum(el.value),v;
+  if(t=="cpf"){d=d.slice(0,11);v=d.slice(0,3)+(d.length>3?"."+d.slice(3,6):"")+(d.length>6?"."+d.slice(6,9):"")+(d.length>9?"-"+d.slice(9,11):"")}
+  else{d=d.slice(0,11);v=d.length<3?d:"("+d.slice(0,2)+") "+(d.length>10?d.slice(2,7)+"-"+d.slice(7):d.slice(2,6)+(d.length>6?"-"+d.slice(6):""))}
+  el.value=v;F[k]=v;}
+function mesmo(v){F.mesmo=v;atualizaEntrega();}
+/* CEP -> endereço (ViaCEP). s = "" (endereço principal) ou "2" (entrega em outro endereço) */
+function cepIn(el,s){const d=soNum(el.value).slice(0,8);el.value=d.length>5?d.slice(0,5)+"-"+d.slice(5):d;F["cep"+s]=el.value;
+  $("cepst"+s).textContent="";
+  if(d.length==8)buscaCep(s);
+  else{["cid","uf"].forEach(k=>{F[k+s]="";$("f_"+k+s).value=""});atualizaEntrega()}}
+async function buscaCep(s){const v=soNum(F["cep"+s]),st=$("cepst"+s);st.textContent="Buscando endereço…";
+  try{const r=await fetch(`https://viacep.com.br/ws/${v}/json/`),d=await r.json();
+    if(soNum(F["cep"+s])!=v)return;   // o cliente já mudou o CEP
+    if(d.erro){st.textContent="CEP não encontrado. Confira os números.";["log","bairro","cid","uf"].forEach(k=>{F[k+s]="";$("f_"+k+s).value=""})}
+    else{F["log"+s]=d.logradouro||"";F["bairro"+s]=d.bairro||"";F["cid"+s]=d.localidade||"";F["uf"+s]=d.uf||"";
+      ["log","bairro","cid","uf"].forEach(k=>$("f_"+k+s).value=F[k+s]);
+      st.textContent=d.logradouro?"":"Esse CEP não traz a rua: digite o endereço.";
+      if(d.logradouro)$("f_num"+s).focus()}
+  }catch(e){st.textContent="Não consegui buscar o CEP agora. Digite o endereço manualmente."}
+  atualizaEntrega();}
+/* Regras de entrega: Fortaleza, CEP nas faixas atendidas e pedido a partir de R$ 1.000 */
+function statusEntrega(total){
+  const s=F.mesmo=="sim"?"":"2",cep=soNum(F["cep"+s]),m=[];
+  if(total<MIN_ENTREGA)m.push(`a entrega é somente para pedidos a partir de ${R(MIN_ENTREGA)} (seu pedido está em ${R(total)})`);
+  if(cep.length==8){if(!cepOk(cep)||(F["cid"+s]&&norm(F["cid"+s])!="fortaleza"))m.push("o CEP informado está fora da nossa área de entrega (entregamos somente em Fortaleza, nas regiões atendidas)")}
+  else if(!m.length)return{ok:null,m};
+  return{ok:!m.length,m};}
+function atualizaEntrega(){const el=$("avEnt");if(!el)return;
+  const total=totalPedido(),s=statusEntrega(total);
+  $("b2").style.display=F.mesmo=="nao"?"grid":"none";
+  el.className="aviso "+(s.ok===true?"ok":s.ok===false?"no":"");
+  el.innerHTML=s.ok===null?`🚚 Entrega em Fortaleza para pedidos a partir de ${R(MIN_ENTREGA)}, <b>em até 24h após a confirmação da compra</b>. Informe o CEP para conferirmos.`
+   :s.ok?`✅ Entregamos neste endereço! Prazo: <b>até 24h após a confirmação da compra</b>.`
+   :`⚠️ Não será possível fazer a entrega: ${s.m.join("; e ")}.<br><b>Neste caso o pedido será para retirada na loja</b> (${LOJA.endereco}).`;
+  $("ftot").innerHTML=`Total do pedido: <b>${R(total)}</b><br>${resumoPag(total)}`;}
+const endH=s=>`<label class="fld"><span>CEP</span><input id="f_cep${s}" inputmode="numeric" maxlength="9" autocomplete="postal-code" placeholder="00000-000" value="${esc(F["cep"+s])}" oninput="cepIn(this,'${s}')"></label>
+  <small id="cepst${s}" class="cepst"></small>
+  <label class="fld"><span>Endereço (rua/avenida)</span><input id="f_log${s}" value="${esc(F["log"+s])}" oninput="F['log${s}']=this.value"></label>
+  <div class="f2"><label class="fld"><span>Número</span><input id="f_num${s}" value="${esc(F["num"+s])}" oninput="F['num${s}']=this.value"></label>
+  <label class="fld"><span>Complemento (se tiver)</span><input id="f_comp${s}" value="${esc(F["comp"+s])}" oninput="F['comp${s}']=this.value"></label></div>
+  <label class="fld"><span>Bairro</span><input id="f_bairro${s}" value="${esc(F["bairro"+s])}" oninput="F['bairro${s}']=this.value"></label>
+  <div class="f2"><label class="fld"><span>Cidade</span><input id="f_cid${s}" readonly value="${esc(F["cid"+s])}"></label>
+  <label class="fld"><span>UF</span><input id="f_uf${s}" readonly value="${esc(F["uf"+s])}"></label></div>`;
+function formHtml(){return `<div class="fform" id="fform">
+  <h4>Seus dados</h4>
+  <label class="fld"><span>Nome completo</span><input id="f_nome" autocomplete="name" value="${esc(F.nome)}" oninput="F.nome=this.value"></label>
+  <label class="fld"><span>CPF</span><input id="f_cpf" inputmode="numeric" placeholder="000.000.000-00" value="${esc(F.cpf)}" oninput="mk(this,'cpf','cpf')"></label>
+  <label class="fld"><span>E-mail</span><input id="f_email" type="email" autocomplete="email" value="${esc(F.email)}" oninput="F.email=this.value"></label>
+  <label class="fld"><span>Telefone / WhatsApp</span><input id="f_tel" inputmode="tel" autocomplete="tel" placeholder="(85) 99999-9999" value="${esc(F.tel)}" oninput="mk(this,'tel','tel')"></label>
+  <h4>Endereço</h4>${endH("")}
+  <h4>Esse é o endereço de entrega?</h4>
+  <div class="radios"><label><input type="radio" name="mesmo" value="sim" ${F.mesmo=="sim"?"checked":""} onchange="mesmo('sim')"> Sim</label>
+  <label><input type="radio" name="mesmo" value="nao" ${F.mesmo=="nao"?"checked":""} onchange="mesmo('nao')"> Não</label></div>
+  <div id="b2" class="fform" style="display:none"><h4>Endereço de entrega</h4>${endH("2")}</div>
+  <div class="aviso" id="avEnt"></div>
+  <div class="resumo" id="ftot"></div>
+  <button type="button" class="btn" style="display:block;width:100%" onclick="enviar()">Enviar pedido pelo WhatsApp</button>
+  <small class="cepst">Seus dados não ficam salvos no site: vão somente na mensagem do WhatsApp, para gerarmos o seu link de pagamento.</small>
+  ${askBtn("Olá! Estou preenchendo meus dados para finalizar um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido(),"❓ Tirar uma dúvida antes de enviar")}
+  <button type="button" class="lnk" onclick="voltar()">← Voltar ao carrinho</button></div>`}
+function enviar(){
+  const err=(id,m)=>{aviso(m);const e=$(id);if(e){e.focus();e.scrollIntoView({block:"center"})}};
+  if(F.nome.trim().split(/\s+/).filter(Boolean).length<2)return err("f_nome","Informe o nome completo.");
+  if(!cpfOk(F.cpf))return err("f_cpf","CPF inválido. Confira os números.");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(F.email.trim()))return err("f_email","Informe um e-mail válido.");
+  if(soNum(F.tel).length<10)return err("f_tel","Informe o telefone com DDD.");
+  const ss=F.mesmo=="nao"?["","2"]:[""];
+  for(const s of ss){const q=s?" de entrega":"";
+    if(soNum(F["cep"+s]).length!=8||!F["cid"+s])return err("f_cep"+s,`Informe um CEP válido${q}.`);
+    if(!F["log"+s].trim())return err("f_log"+s,`Informe o endereço${q}.`);
+    if(!F["num"+s].trim())return err("f_num"+s,`Informe o número${q} (ou S/N).`);
+    if(!F["bairro"+s].trim())return err("f_bairro"+s,`Informe o bairro${q}.`);}
+  const total=totalPedido(),st=statusEntrega(total),linhas=linhasPedido();
+  const endTxt=s=>`${F["log"+s]}, ${F["num"+s]}${F["comp"+s]?" - "+F["comp"+s]:""} - ${F["bairro"+s]} - ${F["cid"+s]}/${F["uf"+s]} - CEP ${F["cep"+s]}`;
+  const entrega=st.ok?`🚚 ENTREGA em: ${endTxt(F.mesmo=="sim"?"":"2")}\nPrazo: até 24h após a confirmação da compra.`
+    :`🏬 RETIRADA NA LOJA (não há entrega neste caso: ${st.m.join("; ")}).`;
+  const msg=`Olá! Quero fechar este pedido:\n${linhas}\nTotal: ${R(total)}\nForma de pagamento: ${resumoPag(total)}\nPor favor, me enviem o link de pagamento.\n\n`
+   +`👤 DADOS DO CLIENTE\nNome: ${F.nome.trim()}\nCPF: ${F.cpf}\nE-mail: ${F.email.trim()}\nTelefone: ${F.tel}\nEndereço: ${endTxt("")}\n\n${entrega}`;
+  window.open(wa(msg),"_blank","noopener");}
 function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k==k),atual=f?f.q:0;
   if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
   if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);$("dr").classList.add("on");return;}
@@ -512,29 +568,21 @@ function desenhar(){
   $("itens").innerHTML=cart.length?cart.map((c,n)=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];
     return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1],p)*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
   $("itens").innerHTML+=sugestoes();
-  const total=cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1],PRODUTOS[c.i])*c.q,0);
   if(!cart.length)etapa=0;
-  const tp=pixv(total),linhas=cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1],p)*c.q)}`}).join("\n");
-  if(!cart.length){$("tot").innerHTML="";return;}
-  if(etapa==1){
-    const msg="Olá! Fiz o pagamento deste pedido por Pix:\n"+linhas+`\nTotal: ${R(total)}`+(PIXD?`\nDesconto Pix (-${PIXD}%): ${R(tp)}`:"")+`\nValor pago no Pix: ${R(tp)}\nVou enviar o comprovante aqui.`+DADOS_NOTA;
-    $("tot").innerHTML=`<div class="ent">Pagar com Pix</div>${PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(tp)}</div>
-    <div class="pixbox">${(()=>{try{return `<div class="qr">${qrSvg(pixCode(tp))}</div><small class="cap">Pix &gt; Ler QR Code no app do seu banco</small>`}catch(e){return ""}})()}
-      <small>Chave Pix (CNPJ) · CKR Colchões</small>
-      <div class="pixk"><b id="pk" data-c="${PIXK}">${fmtK(PIXK)}</b><button type="button" class="cp" onclick="copiar('pk',this)">Copiar</button></div>
-      <small>Pix copia e cola (já com o valor do pedido)</small>
-      <textarea id="pixcode" readonly rows="4" onclick="this.select()">${pixCode(tp)}</textarea>
-      <button type="button" class="btn dark" onclick="copiar('pixcode',this)">Copiar código Pix</button>
-      <ol><li>No app do seu banco, escolha Pix e leia o QR Code ou use o "copia e cola".</li><li>Confira o valor e o nome <b>${PIXNOME}</b> e pague.</li><li>Toque no botão abaixo: o WhatsApp abre com o pedido e o pedido dos <b>dados para a nota fiscal</b> (nome, CPF, CEP e endereço com número). Preencha e envie junto com o comprovante.</li></ol></div>
-    <a class="btn" style="display:block" target="_blank" rel="noopener" href="${wa(msg)}">Já paguei · enviar comprovante</a>
-    <button type="button" class="lnk" onclick="voltar()">← Voltar ao carrinho</button>`;return;}
-  const msgC="Olá! Quero fechar este pedido:\n"+linhas+`\nTotal: ${R(total)}\nPagamento: Cartão de crédito (até ${PARC}x de ${R(total/PARC)} sem juros)`+DADOS_NOTA;
+  $("dr").classList.toggle("form",etapa==2);
+  if(!cart.length){$("tot").innerHTML=askBtn("Olá! Tenho uma dúvida sobre os produtos da CKR Colchões.","❓ Tirar uma dúvida no WhatsApp");return;}
+  const total=totalPedido(),tp=pixv(total);
+  if(etapa==2){if(!$("fform"))$("tot").innerHTML=formHtml();atualizaEntrega();return;}
+  const op=(k,tit,sub,extra="")=>`<button type="button" role="radio" aria-checked="${pay==k}" class="po ${pay==k?"on":""}" onclick="setPay('${k}')"><i></i><span><b>${tit}${extra}</b><small>${sub}</small></span></button>`;
   $("tot").innerHTML=`<div class="ent">Total</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:total)}</div>
     <div class="pay" role="radiogroup" aria-label="Forma de pagamento">
-      <button type="button" role="radio" aria-checked="${pay=="pix"}" class="po ${pay=="pix"?"on":""}" onclick="setPay('pix')"><i></i><span><b>Pix${PIXD?`<em>-${PIXD}%</em>`:""}</b><small>${PIXD?`${R(tp)} no Pix`:"Pague na hora, sem taxa"}</small></span></button>
-      <button type="button" role="radio" aria-checked="${pay!="pix"}" class="po ${pay!="pix"?"on":""}" onclick="setPay('cartao')"><i></i><span><b>Cartão de crédito</b><small>até ${PARC}x de ${R(total/PARC)} sem juros</small></span></button>
+      ${op("pix","Pix",PIXD?`${R(tp)} no Pix`:"Pague na hora, sem taxa",PIXD?`<em>-${PIXD}%</em>`:"")}
+      ${op("credito","Cartão de crédito",`até ${PARC}x de ${R(total/PARC)} sem juros`)}
+      ${op("debito","Cartão de débito","à vista")}
     </div>
-    ${pay=="pix"?`<button type="button" class="btn" style="display:block;width:100%" onclick="irPix()">Pagar com Pix</button>`:`<a class="btn" style="display:block" target="_blank" rel="noopener" href="${wa(msgC)}">Finalizar no WhatsApp</a>`}`;}
+    <div class="ent">🚚 Entrega em Fortaleza para pedidos a partir de ${R(MIN_ENTREGA)}, em até 24h após a confirmação da compra. Abaixo disso, retirada na loja.</div>
+    <button type="button" class="btn" style="display:block;width:100%;margin:10px 0" onclick="irForm()">Continuar</button>
+    ${askBtn("Olá! Estou montando um pedido na CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
 /* ---------- Oferta em destaque (popup ao abrir + mini no canto) ---------- */
 (function(){
   const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true,miniInicio:8,miniDuracao:12,miniIntervalo:30,miniVezes:4},typeof OFERTA!=="undefined"?OFERTA:{});
