@@ -37,9 +37,13 @@ const MINIS = {
   "base-corino-vazada-1.webp",
   "base-corino-vazada-2.webp"
  ],
- "base-sommier": [
+ "base-sommier-1": [
   "base-sommier-z1.webp",
   "base-sommier-z2.webp"
+ ],
+ "base-sommier": [
+  "base-sommier-1-mini-2.webp",
+  "base-sommier-1-mini-3.webp"
  ],
  "cabeceira-piave-bege": [
   "cabeceira-piave-bege-1.webp",
