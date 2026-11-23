@@ -12,7 +12,7 @@ const MINIS = {
  "Deep-Sleep": [
   "Deep-Sleep-miniatura 1.webp",
   "Deep-Sleep-miniatura 2.webp"
- ]
+ ],
  "airtech-100": [
   "airtech-100-1.webp",
   "airtech-100-2.webp"
