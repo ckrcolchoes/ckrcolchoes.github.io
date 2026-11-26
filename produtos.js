@@ -61,7 +61,7 @@ const PRODUTOS = [
   { nome: "Deep Sleep", cat: "colchao", img: "Deep-Sleep",
     desc: "Molas superpocket ensacadas e lâmina de EPS. Conforto extra com ótimo custo-benefício.",
     dif: ["Molas superpocket ensacadas", "Lâmina de EPS", "Revestimento em malha"],
-    tamanhos: [["Casal 138×188", 1620.59, "2026082016444398", 1]] },
+    tamanhos: [["Casal 138×188", 1620.59, "2026082016444398", 0]] },
   { nome: "Airtech 1.0.0", cat: "colchao", img: "airtech-100",
     desc: "Revestimento em malha com tecnologia de microporos e camada de espuma D33. Conforto e boa respirabilidade.",
     dif: ["Revestimento em malha", "Bordado em matelassê", "Tecnologia de microporos", "Lâmina de EPS"],
