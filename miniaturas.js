@@ -53,6 +53,10 @@ const MINIS = {
   "cabeceira-piave-bege-1.webp",
   "cabeceira-piave-bege-z2.webp"
  ],
+  "ovo_principal": [
+  "ovo_miniatura_1.webp",
+  "ovo_miniatura_2.webp"
+ ],
  "colchonete-academia": [
   "colchonete-academia-z1.webp",
   "colchonete-academia-z2.webp"
