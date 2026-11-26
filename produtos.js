@@ -13,6 +13,18 @@ const LOJA = {
 // (desconto: 0 = sem desconto). Sem esse campo, vale o desconto geral abaixo.
 const DESCONTO = 30;
 
+// ------------------------------------------------------------
+//  TEMPO DA PROMOÇÃO (só você edita aqui; o cliente não vê este arquivo na tela)
+//  Formato: "AAAA-MM-DDTHH:MM:00-03:00"  (-03:00 = horário de Fortaleza)
+// ------------------------------------------------------------
+const PROMO_FIM = "2026-11-28T13:00:00-03:00";   // quando a Black Friday acaba. "" = sem prazo
+const PROMO_RELOGIO = true;                       // true mostra o relógio no topo; false esconde
+const PROMO_TITULO = "BLACK FRIDAY CKR termina em";
+const PROMO_ENCERRA = true;                       // true = ao acabar o tempo, o desconto geral desliga sozinho
+
+// Para dar prazo a UM produto, coloque nele:  ate: "2026-12-05T18:00:00-03:00"
+// Depois dessa data ele volta ao preço normal sozinho.
+
 // A cada quantos segundos o banner troca para os próximos 3 produtos.
 const BANNER_SEGUNDOS = 3;
 
@@ -27,6 +39,7 @@ const OFERTA = {
   tamanho: 0,                  // 0 = primeiro tamanho da lista
   titulo: "Oferta da Semana",
   condicao: "",                // texto extra opcional (ex.: "Válido até domingo")
+  ate: "",                     // fim da oferta em destaque. Ex.: "2026-11-27T23:59:00-03:00". "" = sem prazo
   rodape: "Enquanto durar o estoque · Entrega grátis em Fortaleza",
   umaVezPorSessao: true,       // false = o popup grande abre em toda visita/recarga
   miniInicio: 8,               // depois de fechar o popup, o mini aparece após X s
@@ -41,6 +54,7 @@ const OFERTA = {
 //   estoque = null -> não mostra quantidade
 // promo: preço promocional fixo (só em produto com 1 tamanho); o % do selo é calculado sozinho
 // dif: lista de diferenciais mostrados na tela do produto
+// ate: (opcional) data/hora em que o desconto DESTE produto acaba
 const PRODUTOS = [
   { nome: "Soft D-20", cat: "colchao", img: "soft-d20", promo: 249.99,
     desc: "Colchão de espuma D20, leve e econômico para o dia a dia.",
