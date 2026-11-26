@@ -460,7 +460,7 @@ let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário | 3 = p
 let parcelas=PARC;               // parcelas escolhidas no cartão de crédito
 let ultimaMsg="";                // última mensagem enviada ao WhatsApp (só na memória)
 /* Pagamento aparece depois de 2 s (sobe devagar) para o cliente ver os adicionais primeiro */
-const ATRASO_PAGAMENTO=2000;     // em milissegundos
+const ATRASO_PAGAMENTO=3500;     // em milissegundos
 let pagOk=false,_tp;
 function agendaPag(){pagOk=false;clearTimeout(_tp);_tp=setTimeout(()=>{pagOk=true;if(etapa==0&&$("dr").classList.contains("on"))desenhar(true)},ATRASO_PAGAMENTO);}
 function mostraPag(){pagOk=true;clearTimeout(_tp);desenhar(true);}
