@@ -47,6 +47,10 @@ nav a{margin:0 14px;color:var(--ink);text-decoration:none;font-weight:500}
 @keyframes pulsatxt{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.78}}
 @media(prefers-reduced-motion:reduce){.bf .cartbtn,.bftxt{animation:none}}
 .btn.cons{padding:13px 22px;font-size:16px;box-shadow:0 6px 16px #1faa5955}
+/* Círculo de parcelamento ao lado do carrinho */
+.parcirc{flex:none;width:70px;height:70px;border-radius:50%;background:var(--gold);color:#1a1200;border:3px solid #fff;box-shadow:0 6px 16px #0005;display:grid;place-content:center;text-align:center;line-height:1.05;font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.02em}
+.parcirc b{display:block;font-size:22px;font-family:Georgia,serif;letter-spacing:0}
+@media(max-width:620px){.parcirc{width:60px;height:60px;font-size:9px}.parcirc b{font-size:19px}}
 @media(max-width:620px){header{padding:10px 12px}.logo{font-size:19px}.logo small{display:none}.bf .cartbtn{width:48px;height:48px}.bf .cartbtn svg{width:26px;height:26px}.btn.cons{padding:11px 14px;font-size:14px}.hr{gap:8px}}
 @media(max-width:620px){header{flex-wrap:wrap;justify-content:center;row-gap:8px}.logo{width:100%;text-align:center}.hr{width:100%;flex-direction:column;align-items:stretch;gap:10px}.bf{justify-content:center;padding-top:6px}.btn.cons{width:100%}.bftxt{font-size:14px;letter-spacing:.03em}.bf{margin-right:0;gap:8px}.btn.cons{white-space:nowrap;padding:11px 12px;font-size:13px}}
 @media(max-width:620px){.logo{justify-content:center}.logo-img{height:58px}}
@@ -260,7 +264,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .fim .aviso{text-align:left}
 /* PARCELAS DO CARTÃO */
 .parcs{margin:0 0 12px}
-/* CARRINHO: o pagamento sobe devagar depois de 2 s, para dar tempo de ver os adicionais */
+/* CARRINHO: o pagamento sobe devagar depois de alguns segundos, para dar tempo de ver os adicionais */
 .itens{min-height:0}
 .itens,.tot,.ov{scrollbar-width:thin;scrollbar-color:var(--blue) transparent}
 .itens::-webkit-scrollbar,.tot::-webkit-scrollbar,.ov::-webkit-scrollbar{width:8px}
@@ -289,7 +293,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 </style>
 </head>
 <body>
-<div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">12</span>x sem juros</span><span><button type="button" id="instTop" class="instlnk" hidden>📲 Instalar app</button><span id="tel"></span></span></div>
+<div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">21</span>x no cartão</span><span><button type="button" id="instTop" class="instlnk" hidden>📲 Instalar app</button><span id="tel"></span></span></div>
 <header>
   <div class="logo"><img src="img/logo-ckr-3d.webp" alt="Logo CKR Colchões" class="logo-img"><span>CKR Colchões<small>FORTALEZA · CE</small></span></div>
   <nav><a href="#catalogo">Catálogo</a><a href="#duvidas">Dúvidas</a><a href="#loja">Nossa loja</a></nav>
@@ -297,6 +301,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
     <button class="bf" id="cartbtn" aria-label="Abrir carrinho — Black Friday CKR">
       <span class="cartbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.5L21.5 8H6"/></svg><b id="cnt">0</b></span>
       <span class="bftxt">Black Friday CKR</span>
+      <span class="parcirc" aria-label="Parcelamento em até 21 vezes nos cartões">em até<b id="parcN">21x</b>nos cartões</span>
     </button>
     <a class="btn cons" id="wa-top" target="_blank" rel="noopener">💬 Fale com um consultor</a>
   </div>
@@ -377,8 +382,19 @@ const thumbs=(p,cls,alvo)=>`<div class="thumbs ${cls}">${fotos(p).map((f,j)=>`<b
 function trocar(btn,seletor){const box=btn.closest(seletor);const img=box.querySelector(".ph img, .bigph img");img.src=btn.dataset.f;img.classList.toggle("zoomed",btn.parentElement.firstElementChild!==btn);btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b==btn));}
 const off=p=>descP(p)?`<span class="off">-${descP(p)}%</span>`:"";
 /* Pagamento: lê as configurações do produtos.js (com valores padrão se faltarem) */
-const PARC=(typeof PARCELAS!=="undefined"&&PARCELAS>0)?PARCELAS:12;   // nº MÁXIMO de parcelas sem juros no cartão de crédito
+/* Taxas do cartão de crédito (%), de 1x até 21x. Já somam venda + antecipação. */
+const TAXAS={vm:[4.05,4.45,4.45,4.45,4.45,4.45,4.65,4.65,4.65,4.95,4.95,6.24,8.18,8.98,9.78,10.58,11.38,12.38,13.18,13.98,14.78]};
+TAXAS.ae=TAXAS.vm.map(x=>Math.round((x+1.5)*100)/100);   // Amex/Elo = Visa/Master + 1,50 ponto
+const BANDEIRAS={vm:"Visa / Mastercard",ae:"Amex / Elo"};
+/* "dividir" = valor ÷ (1 − taxa): você recebe exatamente o valor do produto depois da taxa
+   "somar"   = valor × (1 + taxa) */
+const MODO_TAXA="dividir";
+const PARC=TAXAS.vm.length;   // 21
+const totalCartao=(t,n,b)=>{const x=TAXAS[b][n-1]/100;return Math.round((MODO_TAXA=="somar"?t*(1+x):t/(1-x))*100)/100};
+// Mostra valores de referência para as duas famílias de bandeiras, sem confundir taxas.
+const resumoUltimaParcela=t=>`Em até ${PARC}x no cartão: Visa/Mastercard ${R(totalCartao(t,PARC,"vm")/PARC)} por parcela · Amex/Elo ${R(totalCartao(t,PARC,"ae")/PARC)} por parcela. O valor exato depende da bandeira e do número de parcelas escolhido.`;
 $("parc").textContent=PARC;
+$("parcN").textContent=PARC+"x";
 const PIXD=(typeof DESCONTO_PIX!=="undefined"&&DESCONTO_PIX>0)?DESCONTO_PIX:0;   // 0 = sem desconto no Pix
 const pixv=v=>Math.round(v*(100-PIXD))/100;
 /* Estoque: 0 = esgotado | null = não informado (sem limite) */
@@ -439,7 +455,7 @@ function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1
   <div><div class="cat">${CATS[p.cat]}</div><h2>${p.nome}</h2>
   ${p.tamanhos.length>1?`<div class="tsel">${p.tamanhos.map((x,j)=>`<button class="${j==k?"on":""}" onclick="abrir(${i},${j})">${x[0]}${esgT(x)?" · esgotado":""}</button>`).join("")}</div>`:`<div class="cat" style="color:var(--muted);letter-spacing:.05em;margin-bottom:16px">${t[0]}</div>`}
   <div class="pbox">${pr!=null?`${descP(p)?`<span class="de">${R(t[1])}</span><span class="pct">-${descP(p)}%</span>`:""}<div class="por">${R(pr)}</div>
-    <div class="ent">ou <b>${PARC}x de ${R(pr/PARC)}</b> sem juros${PIXD?` · <b>${R(pixv(pr))}</b> no Pix (-${PIXD}%)`:""}</div>`:`<div class="consulte">Preço sob consulta</div><div class="ent">Fale com a gente pelo WhatsApp.</div>`}
+    <div class="ent">${resumoUltimaParcela(pr)}${PIXD?` · <b>${R(pixv(pr))}</b> no Pix (-${PIXD}%)`:""}</div>`:`<div class="consulte">Preço sob consulta</div><div class="ent">Fale com a gente pelo WhatsApp.</div>`}
     ${esgT(t)?`<div class="esgmsg">Esgotado no momento. Chame a gente e avisamos quando chegar.</div>`:""}
     <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn buy" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
     <a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! Quero o ${p.nome} (${t[0]})${pr!=null?" por "+R(pr):""}. Ref. ${t[2]}`)}">${pr!=null?"Comprar no WhatsApp":"Consultar preço no WhatsApp"}</a>`}</div>
@@ -457,9 +473,9 @@ document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").cla
 
 /* ---------- Carrinho ---------- */
 let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário | 3 = pedido enviado
-let parcelas=PARC;               // parcelas escolhidas no cartão de crédito
+let parcelas=1,bandeira="vm";    // parcelas e bandeira escolhidas no cartão de crédito
 let ultimaMsg="";                // última mensagem enviada ao WhatsApp (só na memória)
-/* Pagamento aparece depois de 2 s (sobe devagar) para o cliente ver os adicionais primeiro */
+/* Pagamento aparece automaticamente após 3,5 segundos; o cliente também pode abrir/fechar manualmente. */
 const ATRASO_PAGAMENTO=3500;     // em milissegundos
 let pagOk=false,_tp;
 function agendaPag(){pagOk=false;clearTimeout(_tp);_tp=setTimeout(()=>{pagOk=true;if(etapa==0&&$("dr").classList.contains("on"))desenhar(true)},ATRASO_PAGAMENTO);}
@@ -476,12 +492,14 @@ const totalPedido=()=>cart.reduce((s,c)=>s+novo(PRODUTOS[c.i].tamanhos[c.k][1],P
 const linhasPedido=()=>cart.map(c=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];return `• ${c.q}x ${p.nome} (${t[0]}) – ${R(novo(t[1],p)*c.q)}`}).join("\n");
 function setPay(f){pay=f;desenhar();}
 function setParc(n){parcelas=Math.min(Math.max(1,n),PARC);desenhar();}
+function setBand(b){bandeira=b;desenhar();}
+function escondePag(){pagOk=false;clearTimeout(_tp);desenhar();}   // baixa o pagamento manualmente
 function irForm(){etapa=2;desenhar();$("tot").scrollTop=0;}
 function voltar(){etapa=0;desenhar();}
-function concluir(){cart=[];F=F0();ultimaMsg="";etapa=0;pay="pix";parcelas=PARC;desenhar();$("dr").classList.remove("on");}
-const textoParc=(t,n)=>n==1?`1x de ${R(t)} (à vista no cartão)`:`${n}x de ${R(t/n)} sem juros`;
+function concluir(){cart=[];F=F0();ultimaMsg="";etapa=0;pay="pix";parcelas=1;bandeira="vm";desenhar();$("dr").classList.remove("on");}
+const textoParc=(t,n)=>{const c=totalCartao(t,n,bandeira);return n==1?`1x de ${R(c)} (à vista no cartão)`:`${n}x de ${R(c/n)} (total ${R(c)})`};
 const resumoPag=t=>pay=="pix"?`Pix: ${R(pixv(t))}${PIXD?` (-${PIXD}% no Pix)`:""}`
-  :pay=="credito"?`Cartão de crédito: ${R(t)} em ${textoParc(t,parcelas)}`
+  :pay=="credito"?`Cartão de crédito (${BANDEIRAS[bandeira]}): ${textoParc(t,parcelas)}`
   :`Cartão de débito: ${R(t)} à vista`;
 const nomePag=()=>pay=="pix"?"Pix":pay=="credito"?`Cartão de crédito em ${parcelas}x`:"Cartão de débito";
 function cpfOk(c){c=soNum(c);if(c.length!=11||/^(\d)\1+$/.test(c))return false;
@@ -580,7 +598,7 @@ function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k
   if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
   if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);$("dr").classList.add("on");return;}
   if(etapa>=2)etapa=0;
-  if(!$("dr").classList.contains("on"))agendaPag();   // carrinho estava fechado: o pagamento sobe depois de 2 s
+  if(!$("dr").classList.contains("on"))agendaPag();   // carrinho estava fechado: o pagamento sobe depois de alguns segundos
   f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
 function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
   if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);return;}
@@ -644,15 +662,17 @@ function desenhar(anim){
   if(etapa==3){$("tot").innerHTML=fimHtml();return;}
   if(etapa==2){if(!$("fform"))$("tot").innerHTML=formHtml();atualizaEntrega();return;}
   const tot=$("tot");tot.classList.remove("subir");
-  if(!pagOk){   // primeiros 2 s: só o total, para o cliente ver os adicionais
+  if(!pagOk){   // enquanto o pagamento está escondido: só o total, para o cliente ver os adicionais
     tot.innerHTML=`<div class="ent">Total</div><div class="por">${R(total)}</div><button type="button" class="btn dark mostra" onclick="mostraPag()">Escolher forma de pagamento ↑</button>`;return;}
   if(anim){void tot.offsetWidth;tot.classList.add("subir")}   // pagamento sobe de baixo para cima
   const op=(k,tit,sub,extra="")=>`<button type="button" role="radio" aria-checked="${pay==k}" class="po ${pay==k?"on":""}" onclick="setPay('${k}')"><i></i><span><b>${tit}${extra}</b><small>${sub}</small></span></button>`;
-  const seletorParc=pay=="credito"?`<label class="fld parcs"><span>Em quantas vezes você quer parcelar?</span><select id="parcsel" onchange="setParc(+this.value)">${Array.from({length:PARC},(_,n)=>n+1).map(n=>`<option value="${n}"${n==parcelas?" selected":""}>${textoParc(total,n)}</option>`).join("")}</select></label>`:"";
-  $("tot").innerHTML=`<div class="ent">Total</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:total)}</div>
+  const seletorParc=pay=="credito"?`<div class="fld parcs"><span>Bandeira do cartão</span><div class="radios" style="flex-wrap:wrap">${Object.entries(BANDEIRAS).map(([k,v])=>`<label><input type="radio" name="band" ${bandeira==k?"checked":""} onchange="setBand('${k}')"> ${v}</label>`).join("")}</div></div>
+  <label class="fld parcs"><span>Em quantas vezes você quer parcelar? (taxas da bandeira incluídas)</span><select id="parcsel" onchange="setParc(+this.value)">${Array.from({length:PARC},(_,n)=>n+1).map(n=>`<option value="${n}"${n==parcelas?" selected":""}>${textoParc(total,n)}</option>`).join("")}</select></label>`:"";
+  $("tot").innerHTML=`<div class="ent">Total${pay=="credito"?` no cartão em ${parcelas}x`:""}</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:pay=="credito"?totalCartao(total,parcelas,bandeira):total)}</div>
+    <button type="button" class="lnk" onclick="escondePag()">↓ Esconder formas de pagamento</button>
     <div class="pay" role="radiogroup" aria-label="Forma de pagamento">
       ${op("pix","Pix",PIXD?`${R(tp)} no Pix`:"Pague na hora, sem taxa",PIXD?`<em>-${PIXD}%</em>`:"")}
-      ${op("credito","Cartão de crédito",`até ${PARC}x de ${R(total/PARC)} sem juros`)}
+      ${op("credito","Cartão de crédito",`parcele em até ${PARC}x`)}
       ${op("debito","Cartão de débito","à vista")}
     </div>
     ${seletorParc}
@@ -680,7 +700,7 @@ function desenhar(anim){
       ${pct?`<div class="ofde">De <s>${R(de)}</s> por apenas</div>`:`<div class="ofde">Por apenas</div>`}
       <div class="ofpor">${R(por)}</div>
       ${pct?`<span class="ofeco">Você economiza ${R(de-por)}</span>`:""}
-      <div class="ofcond">ou ${PARC}x de ${R(por/PARC)} sem juros${PIXD?` · ${R(pixv(por))} no Pix`:""}</div>
+      <div class="ofcond">${resumoUltimaParcela(por)}${PIXD?` · ${R(pixv(por))} no Pix`:""}</div>
       ${c.condicao?`<div class="ofcond">${c.condicao}</div>`:""}
       <div class="ofacts">
         <a class="btn" id="ofwa" target="_blank" rel="noopener" href="${zap}">💬 Comprar no WhatsApp</a>
