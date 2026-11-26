@@ -187,7 +187,7 @@ const PRODUTOS = [
   { nome: "Colchonete Casca de OVO", cat: "acessorio", img: "ovo_principal", desconto: 0,
     desc: "Sem Revestimento, ideal para exercícios físicos e Acamados. Espuma certificada 100% poliuretano.",
     dif: ["Espuma certificada 100% poliuretano"],
-    tamanhos: [["80×90×0,4 cm", 89.26, "2026021108082699", 1]] },
+    tamanhos: [["80×90×0,4 cm", 159,00, "2026021108082699", 1]] },
   { nome: "Colchonete para Academia", cat: "acessorio", img: "colchonete-academia", desconto: 0,
     desc: "Revestimento em napa 100% poliéster que não retém líquidos, ideal para exercícios físicos. Espuma certificada 100% poliuretano, com logo.",
     dif: ["Napa 100% poliéster", "Não retém líquidos", "Espuma certificada 100% poliuretano"],
