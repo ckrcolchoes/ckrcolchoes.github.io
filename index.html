@@ -12,6 +12,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CKR Colchões | Black Friday em Fortaleza</title>
 <meta name="description" content="Black Friday CKR Colchões: 30% de desconto em colchões, bases e travesseiros. Av. Gomes de Matos, 148 – Montese, Fortaleza.">
+<!-- Aplicativo instalável (PWA) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1530">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CKR Colchões">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <style>
 :root{--navy:#0b1530;--blue:#1e4fa3;--sky:#8bb6ff;--bg:#f6f4ef;--ink:#16203a;--gold:#f5b942;--red:#e5363b;--wa:#1faa59;--card:#fff;--muted:#5d6678}
 @media(prefers-color-scheme:dark){:root{--bg:#0e1424;--ink:#e9edf7;--card:#171f35;--muted:#9aa5bf}}
@@ -158,7 +166,7 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);background:var(--red);color:#fff;padding:13px 20px;border-radius:14px;font-weight:600;z-index:90;opacity:0;pointer-events:none;transition:.3s;max-width:min(92vw,420px);text-align:center;box-shadow:0 10px 30px #0006}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 /* PAGAMENTO */
-.tot{max-height:64vh;overflow-y:auto}
+.tot{max-height:50vh;overflow-y:auto}
 .pay{display:grid;gap:8px;margin:12px 0}
 .po{display:flex;align-items:center;gap:10px;text-align:left;border:2px solid #8885;background:var(--card);color:var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;font:inherit;width:100%}
 .po.on{border-color:var(--blue);box-shadow:0 0 0 3px #1e4fa333}
@@ -252,10 +260,36 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .fim .aviso{text-align:left}
 /* PARCELAS DO CARTÃO */
 .parcs{margin:0 0 12px}
+/* CARRINHO: o pagamento sobe devagar depois de 2 s, para dar tempo de ver os adicionais */
+.itens{min-height:0}
+.itens,.tot,.ov{scrollbar-width:thin;scrollbar-color:var(--blue) transparent}
+.itens::-webkit-scrollbar,.tot::-webkit-scrollbar,.ov::-webkit-scrollbar{width:8px}
+.itens::-webkit-scrollbar-thumb,.tot::-webkit-scrollbar-thumb,.ov::-webkit-scrollbar-thumb{background:var(--blue);border-radius:8px}
+.tot{box-shadow:0 -10px 24px #0002}
+.tot.subir{animation:subir .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes subir{from{transform:translateY(70%);opacity:0}to{transform:none;opacity:1}}
+.tot .mostra{display:block;width:100%;margin-top:10px}
+/* DETALHE: barra fixa com o botão de adicionar ao carrinho sempre visível */
+.stk{position:sticky;bottom:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:12px 14px;background:var(--card);border:1px solid #8884;border-radius:18px;box-shadow:0 -8px 24px #0004}
+.stk small{display:block;color:var(--muted);font-size:12px}
+.stk .por{font-size:26px;font-family:Georgia,serif;line-height:1.1}
+.btn.buy{background:var(--red);box-shadow:0 6px 16px #e5363b66;font-size:16px;padding:14px 22px;flex:1;max-width:320px}
+@media(max-width:800px){.bigph{min-height:0;padding:14px}.bigph img{max-height:230px}.bigph>img.zoomed{height:230px}.bigwrap{margin-bottom:76px}}
+@media(prefers-reduced-motion:reduce){.tot.subir{animation:none}}
+/* INSTALAR COMO APLICATIVO */
+.instlnk{background:var(--gold);color:#1a1200;border:0;border-radius:99px;padding:3px 12px;font-weight:800;font-size:13px;cursor:pointer;margin-right:8px;font-family:inherit}
+.inst{position:fixed;left:16px;right:16px;bottom:84px;z-index:40;max-width:440px;margin:0 auto;background:var(--navy);color:#fff;border:2px solid var(--gold);border-radius:18px;padding:14px 16px;display:none;gap:12px;align-items:center;box-shadow:0 12px 34px #000a}
+.inst.on{display:flex;animation:in .4s}
+.inst img{width:48px;height:48px;border-radius:12px;background:#fff;object-fit:contain;flex:none}
+.inst div{flex:1;line-height:1.3}
+.inst b{display:block;font-size:15px}
+.inst small{color:#c8d3f0;font-size:12px}
+.inst .btn{padding:10px 16px;font-size:14px;white-space:nowrap}
+.inst .ix{position:absolute;top:-10px;right:-10px;width:26px;height:26px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:16px;line-height:1;cursor:pointer;box-shadow:0 2px 8px #0006}
 </style>
 </head>
 <body>
-<div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">12</span>x sem juros</span><span id="tel"></span></div>
+<div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">12</span>x sem juros</span><span><button type="button" id="instTop" class="instlnk" hidden>📲 Instalar app</button><span id="tel"></span></span></div>
 <header>
   <div class="logo"><img src="img/logo-ckr-3d.webp" alt="Logo CKR Colchões" class="logo-img"><span>CKR Colchões<small>FORTALEZA · CE</small></span></div>
   <nav><a href="#catalogo">Catálogo</a><a href="#duvidas">Dúvidas</a><a href="#loja">Nossa loja</a></nav>
@@ -407,13 +441,14 @@ function abrir(i,k=0){const p=PRODUTOS[i],t=p.tamanhos[k],pr=t[1]!=null?novo(t[1
   <div class="pbox">${pr!=null?`${descP(p)?`<span class="de">${R(t[1])}</span><span class="pct">-${descP(p)}%</span>`:""}<div class="por">${R(pr)}</div>
     <div class="ent">ou <b>${PARC}x de ${R(pr/PARC)}</b> sem juros${PIXD?` · <b>${R(pixv(pr))}</b> no Pix (-${PIXD}%)`:""}</div>`:`<div class="consulte">Preço sob consulta</div><div class="ent">Fale com a gente pelo WhatsApp.</div>`}
     ${esgT(t)?`<div class="esgmsg">Esgotado no momento. Chame a gente e avisamos quando chegar.</div>`:""}
-    <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn dark" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
+    <div class="acts">${esgT(t)?`<a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! O ${p.nome} (${t[0]}) está esgotado no site. Podem me avisar quando chegar? Ref. ${t[2]}`)}">🔔 Avise-me quando chegar</a>`:`${pr!=null?`<button class="btn buy" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button>`:""}
     <a class="btn" target="_blank" rel="noopener" href="${wa(`Olá! Quero o ${p.nome} (${t[0]})${pr!=null?" por "+R(pr):""}. Ref. ${t[2]}`)}">${pr!=null?"Comprar no WhatsApp":"Consultar preço no WhatsApp"}</a>`}</div>
     ${askBtn(`Olá! Tenho uma dúvida sobre o ${p.nome} (${t[0]}). Ref. ${t[2]}`,"❓ Tirar dúvida sobre este produto")}
     <div class="ent" style="margin-top:12px">🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000</div></div>
   <div class="specs"><div><small>Medida</small><b>${t[0]}</b></div><div><small>Referência</small><b>${t[2]}</b></div><div><small>Disponibilidade</small><b>${disp}</b></div></div></div></div>
   <div class="sob"><div><h3>Sobre o produto</h3><p>${p.desc}</p></div>
-  <div><h3>Diferenciais</h3><div class="difs">${(p.dif||[]).map(d=>`<div><i>✓</i>${d}</div>`).join("")}</div></div></div>`;
+  <div><h3>Diferenciais</h3><div class="difs">${(p.dif||[]).map(d=>`<div><i>✓</i>${d}</div>`).join("")}</div></div></div>
+  ${pr!=null&&!esgT(t)?`<div class="stk"><div><small>${t[0]}</small><div class="por">${R(pr)}</div></div><button type="button" class="btn buy" onclick="add(${i},${k})">🛍 Adicionar ao carrinho</button></div>`:""}`;
   $("ov").classList.add("on");document.body.style.overflow="hidden";$("ov").scrollTop=0;}
 $("det").onclick=e=>{const a=e.target.closest(".garr");if(a){const bt=[...a.closest(".bigph").querySelectorAll(".thumbs button")],n=bt.findIndex(b=>b.classList.contains("on"));trocar(bt[(n+(+a.dataset.d)+bt.length)%bt.length],".bigph");return}const t=e.target.closest(".thumbs button");if(t)trocar(t,".bigph")};
 function fechar(){$("ov").classList.remove("on");document.body.style.overflow="";}
@@ -424,6 +459,11 @@ document.addEventListener("keydown",e=>{if(e.key=="Escape"){fechar();$("dr").cla
 let cart=[],etapa=0,pay="pix";   // etapa 0 = carrinho | 2 = formulário | 3 = pedido enviado
 let parcelas=PARC;               // parcelas escolhidas no cartão de crédito
 let ultimaMsg="";                // última mensagem enviada ao WhatsApp (só na memória)
+/* Pagamento aparece depois de 2 s (sobe devagar) para o cliente ver os adicionais primeiro */
+const ATRASO_PAGAMENTO=2000;     // em milissegundos
+let pagOk=false,_tp;
+function agendaPag(){pagOk=false;clearTimeout(_tp);_tp=setTimeout(()=>{pagOk=true;if(etapa==0&&$("dr").classList.contains("on"))desenhar(true)},ATRASO_PAGAMENTO);}
+function mostraPag(){pagOk=true;clearTimeout(_tp);desenhar(true);}
 const MIN_ENTREGA=1000;          // entrega só a partir deste valor
 /* Faixas de CEP atendidas (5 primeiros dígitos) */
 const FAIXAS_CEP=[[60010,60060],[60110,60191],[60310,60360],[60410,60455],[60510,60546],[60710,60766],[60810,60878]];
@@ -540,6 +580,7 @@ function add(i,k){const p=PRODUTOS[i],t=p.tamanhos[k],f=cart.find(c=>c.i==i&&c.k
   if(esgT(t)){aviso(`${p.nome} (${t[0]}) está esgotado.`);return;}
   if(t[3]!=null&&atual+1>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);$("dr").classList.add("on");return;}
   if(etapa>=2)etapa=0;
+  if(!$("dr").classList.contains("on"))agendaPag();   // carrinho estava fechado: o pagamento sobe depois de 2 s
   f?f.q++:cart.push({i,k,q:1});desenhar();$("dr").classList.add("on");}
 function mudar(n,d){const c=cart[n],p=PRODUTOS[c.i],t=p.tamanhos[c.k];
   if(d>0&&t[3]!=null&&c.q+d>t[3]){aviso(`Estoque insuficiente: temos apenas ${t[3]} un. Fale com um dos nossos consultores.`);return;}
@@ -591,17 +632,21 @@ function sugestoes(){
   if(!res.length)return "";
   return `<div class="sug"><h4>Aproveite e leve também</h4><small>Combine com o seu pedido (opcional)</small>${res.map(({i,k})=>{const p=PRODUTOS[i],t=p.tamanhos[k];
     return `<div class="sg"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]} · ${R(novo(t[1],p))}</small></div><button type="button" class="add" onclick="add(${i},${k})">+ Adicionar</button></div>`}).join("")}</div>`;}
-function desenhar(){
+function desenhar(anim){
   $("cnt").textContent=cart.reduce((s,c)=>s+c.q,0);
   $("itens").innerHTML=cart.length?cart.map((c,n)=>{const p=PRODUTOS[c.i],t=p.tamanhos[c.k];
     return `<div class="it"><img src="${foto(p)}" alt=""><div><b>${p.nome}</b><small>${t[0]}</small><div class="q"><button onclick="mudar(${n},-1)">−</button>${c.q}<button onclick="mudar(${n},1)">+</button></div>${t[3]!=null&&c.q>=t[3]?`<small style="color:var(--red)">Limite do estoque: ${t[3]} un.</small>`:""}</div><b>${R(novo(t[1],p)*c.q)}</b></div>`}).join(""):`<div class="vazio">Seu carrinho está vazio.</div>`;
   $("itens").innerHTML+=sugestoes();
   if(!cart.length)etapa=0;
   $("dr").classList.toggle("form",etapa>=2);
-  if(!cart.length){$("tot").innerHTML=askBtn("Olá! Tenho uma dúvida sobre os produtos da CKR Colchões.","❓ Tirar uma dúvida no WhatsApp");return;}
+  if(!cart.length){$("tot").classList.remove("subir");$("tot").innerHTML=askBtn("Olá! Tenho uma dúvida sobre os produtos da CKR Colchões.","❓ Tirar uma dúvida no WhatsApp");return;}
   const total=totalPedido(),tp=pixv(total);
   if(etapa==3){$("tot").innerHTML=fimHtml();return;}
   if(etapa==2){if(!$("fform"))$("tot").innerHTML=formHtml();atualizaEntrega();return;}
+  const tot=$("tot");tot.classList.remove("subir");
+  if(!pagOk){   // primeiros 2 s: só o total, para o cliente ver os adicionais
+    tot.innerHTML=`<div class="ent">Total</div><div class="por">${R(total)}</div><button type="button" class="btn dark mostra" onclick="mostraPag()">Escolher forma de pagamento ↑</button>`;return;}
+  if(anim){void tot.offsetWidth;tot.classList.add("subir")}   // pagamento sobe de baixo para cima
   const op=(k,tit,sub,extra="")=>`<button type="button" role="radio" aria-checked="${pay==k}" class="po ${pay==k?"on":""}" onclick="setPay('${k}')"><i></i><span><b>${tit}${extra}</b><small>${sub}</small></span></button>`;
   const seletorParc=pay=="credito"?`<label class="fld parcs"><span>Em quantas vezes você quer parcelar?</span><select id="parcsel" onchange="setParc(+this.value)">${Array.from({length:PARC},(_,n)=>n+1).map(n=>`<option value="${n}"${n==parcelas?" selected":""}>${textoParc(total,n)}</option>`).join("")}</select></label>`:"";
   $("tot").innerHTML=`<div class="ent">Total</div>${pay=="pix"&&PIXD?`<div class="de">${R(total)}</div>`:""}<div class="por">${R(pay=="pix"?tp:total)}</div>
@@ -672,8 +717,40 @@ function desenhar(){
   if(visto)iniciaMini();                                // já viu o popup nesta sessão: só o mini
   else setTimeout(()=>el.classList.add("on"),500);
 })();
-$("cartbtn").onclick=()=>$("dr").classList.add("on");$("drx").onclick=()=>$("dr").classList.remove("on");
+$("cartbtn").onclick=()=>{agendaPag();$("dr").classList.add("on");desenhar();};$("drx").onclick=()=>$("dr").classList.remove("on");
 desenhar();
+
+/* ---------- Instalar como aplicativo (PWA) ---------- */
+(function(){
+  if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+  const instalado=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+  if(instalado)return;                                   // já está rodando como app: não mostra nada
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const dicaIos="No iPhone: toque no botão Compartilhar (quadrado com seta) e escolha “Adicionar à Tela de Início”.";
+  let ev=null,dispensado=false,tm=null;
+  try{dispensado=localStorage.getItem("instNao")==="1"}catch(e){}
+
+  const bar=document.createElement("div");bar.className="inst";bar.setAttribute("role","dialog");bar.setAttribute("aria-label","Instalar o aplicativo CKR Colchões");
+  bar.innerHTML=`<button type="button" class="ix" aria-label="Fechar">×</button><img src="img/logo-ckr-3d.webp" alt="">
+    <div><b>Instale o app da CKR Colchões</b><small>${ios?dicaIos:"Acesse a loja direto da tela do celular, sem baixar nada na loja de aplicativos."}</small></div>
+    ${ios?"":'<button type="button" class="btn" id="instGo">Instalar</button>'}`;
+  document.body.append(bar);
+  const topo=$("instTop");
+
+  const mostraBotao=()=>{topo.hidden=false;if(!dispensado&&!tm)tm=setTimeout(()=>bar.classList.add("on"),8000)};
+  const esconde=()=>{bar.classList.remove("on");topo.hidden=true;clearTimeout(tm)};
+  const instalar=async()=>{
+    if(ev){bar.classList.remove("on");ev.prompt();try{await ev.userChoice}catch(e){}ev=null;topo.hidden=true;}
+    else if(ios){aviso(dicaIos)}
+  };
+  topo.onclick=instalar;
+  const go=$("instGo");if(go)go.onclick=instalar;
+  bar.querySelector(".ix").onclick=()=>{bar.classList.remove("on");try{localStorage.setItem("instNao","1")}catch(e){}};
+
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;mostraBotao()});   // Android / Chrome / Edge
+  window.addEventListener("appinstalled",esconde);
+  if(ios)mostraBotao();                                  // iPhone/iPad não têm o evento: mostramos o passo a passo
+})();
 </script>
 </body>
 </html>
