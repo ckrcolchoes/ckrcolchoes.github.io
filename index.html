@@ -290,9 +290,19 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 .inst small{color:#c8d3f0;font-size:12px}
 .inst .btn{padding:10px 16px;font-size:14px;white-space:nowrap}
 .inst .ix{position:absolute;top:-10px;right:-10px;width:26px;height:26px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:16px;line-height:1;cursor:pointer;box-shadow:0 2px 8px #0006}
+/* RELÓGIO DA PROMOÇÃO */
+#relogio{position:sticky;top:0;z-index:25;background:var(--red);color:#fff;text-align:center;padding:8px 12px;font-weight:700;font-size:15px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+#relogio[hidden]{display:none}
+#relogio .rc{display:inline-flex;align-items:baseline;gap:3px;background:#0006;border-radius:10px;padding:3px 10px;font-variant-numeric:tabular-nums}
+#relogio .rc b{font-size:20px;font-family:Georgia,serif}
+#relogio .rc i{font-style:normal;font-size:12px;margin-right:6px;opacity:.85}
+body.comrel header{top:var(--rh,44px)}
+body.comrel section{scroll-margin-top:140px}
+@media(max-width:620px){#relogio{font-size:13px;padding:6px 8px;gap:6px}#relogio .rc b{font-size:17px}}
 </style>
 </head>
 <body>
+<div id="relogio" hidden role="timer" aria-live="off"></div>
 <div class="top"><span>🚚 Entrega grátis em Fortaleza em compras acima de R$ 1.000 · Parcele em até <span id="parc">21</span>x no cartão</span><span><button type="button" id="instTop" class="instlnk" hidden>📲 Instalar app</button><span id="tel"></span></span></div>
 <header>
   <div class="logo"><img src="img/logo-ckr-3d.webp" alt="Logo CKR Colchões" class="logo-img"><span>CKR Colchões<small>FORTALEZA · CE</small></span></div>
@@ -368,8 +378,16 @@ section h2{font-family:Georgia,serif;font-size:36px;margin-bottom:6px}
 <script>
 const $=id=>document.getElementById(id);
 const R=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-/* Desconto por produto: usa p.desconto se existir (0 = sem desconto); senão, o DESCONTO geral */
-const descP=p=>(p&&p.desconto!=null)?p.desconto:DESCONTO;
+/* Tempo das promoções (vem do produtos.js) */
+const fimMs=s=>{const t=Date.parse(s);return isNaN(t)?null:t};
+const vivo=s=>{const f=s?fimMs(s):null;return f===null||f>Date.now()};
+const PROMO_ON=()=>typeof PROMO_ENCERRA==="undefined"||!PROMO_ENCERRA||vivo(typeof PROMO_FIM!=="undefined"?PROMO_FIM:"");
+/* Desconto por produto: usa p.desconto se existir (0 = sem desconto); senão, o DESCONTO geral (só enquanto a promoção está no prazo) */
+const descP=p=>{
+  if(p&&p.ate&&!vivo(p.ate))return 0;                 // prazo do produto acabou
+  if(p&&p.desconto!=null)return p.desconto;
+  return PROMO_ON()?DESCONTO:0;                       // desconto geral só vale enquanto a promoção está no prazo
+};
 const novo=(v,p)=>Math.round(v*(100-descP(p)))/100;
 const wa=t=>`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(t)}`;
 const foto=p=>`img/${p.img.includes(".")?p.img:p.img+".webp"}`;
@@ -683,8 +701,9 @@ function desenhar(anim){
     ${askBtn("Olá! Estou montando um pedido no Site da CKR Colchões e tenho uma dúvida:\n"+linhasPedido()+"\nTotal: "+R(total),"❓ Tirar uma dúvida sobre o pedido")}`;}
 /* ---------- Oferta em destaque (popup ao abrir + mini no canto) ---------- */
 (function(){
-  const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true,miniInicio:8,miniDuracao:12,miniIntervalo:30,miniVezes:4},typeof OFERTA!=="undefined"?OFERTA:{});
+  const c=Object.assign({ativa:true,produto:"Soft D-20",tamanho:0,titulo:"Oferta da Semana",condicao:"",ate:"",rodape:"Enquanto durar o estoque · Entrega grátis em Fortaleza",umaVezPorSessao:true,miniInicio:8,miniDuracao:12,miniIntervalo:30,miniVezes:4},typeof OFERTA!=="undefined"?OFERTA:{});
   if(!c.ativa)return;
+  if(c.ate&&!vivo(c.ate))return;                       // prazo da oferta em destaque acabou
   const i=PRODUTOS.findIndex(p=>norm(p.nome)==norm(c.produto));if(i<0)return;
   const p=PRODUTOS[i],k=Math.min(c.tamanho||0,p.tamanhos.length-1),t=p.tamanhos[k];
   if(t[1]==null||esgT(t))return;                       // sem preço ou esgotado: não mostra
@@ -740,6 +759,35 @@ function desenhar(anim){
 $("cartbtn").onclick=()=>{agendaPag();$("dr").classList.add("on");desenhar();};$("drx").onclick=()=>$("dr").classList.remove("on");
 desenhar();
 
+/* ---------- Relógio da promoção ---------- */
+(function(){
+  const el=$("relogio"),p2=n=>String(n).padStart(2,"0");
+  const fim=(typeof PROMO_FIM!=="undefined"&&PROMO_FIM)?fimMs(PROMO_FIM):null;
+  const titulo=typeof PROMO_TITULO!=="undefined"?PROMO_TITULO:"A promoção termina em";
+  const mostra=typeof PROMO_RELOGIO==="undefined"||PROMO_RELOGIO;
+  const encerra=typeof PROMO_ENCERRA==="undefined"||PROMO_ENCERRA;
+  let iv;
+  function acabou(aoVivo){
+    clearInterval(iv);el.hidden=true;document.body.classList.remove("comrel");
+    if(!encerra)return;
+    const b=document.querySelector(".black");if(b)b.style.display="none";
+    const t=document.querySelector(".bftxt");if(t)t.textContent="Carrinho";
+    mostrar();desenhar();
+    if(aoVivo)aviso("A promoção de Black Friday terminou. Os preços voltaram ao normal.");
+  }
+  if(fim===null||!mostra)return;
+  if(fim<=Date.now()){acabou(false);return}
+  function tick(){
+    const ms=fim-Date.now();
+    if(ms<=0){acabou(true);return}
+    const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
+    el.innerHTML=`<span>⏰ ${titulo}</span><span class="rc">${d?`<b>${d}</b><i>d</i>`:""}<b>${p2(h)}</b><i>h</i><b>${p2(m)}</b><i>min</i><b>${p2(s)}</b><i>s</i></span>`;
+    document.documentElement.style.setProperty("--rh",el.offsetHeight+"px");
+  }
+  el.hidden=false;document.body.classList.add("comrel");tick();iv=setInterval(tick,1000);
+  addEventListener("resize",()=>document.documentElement.style.setProperty("--rh",el.offsetHeight+"px"));
+})();
+
 /* ---------- Instalar como aplicativo (PWA) ---------- */
 (function(){
   if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
@@ -769,7 +817,7 @@ desenhar();
 
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;mostraBotao()});   // Android / Chrome / Edge
   window.addEventListener("appinstalled",esconde);
-  if(ios)mostraBotao();                                  // iPhone/iPad não têm o evento: mostramos o passo a passo
+  if(ios)mostraBotao();                                  // iPhone/iPad não têm o evento: mostramos o painel de passo a passo
 })();
 </script>
 </body>
